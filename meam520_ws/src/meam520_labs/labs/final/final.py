@@ -119,11 +119,12 @@ if __name__ == "__main__":
 
     #Move around...
     arm.exec_gripper_cmd(0.12,50)
-    pos_to_put = start_T0e
-    pos_to_put[0,3] = 0.56
-    pos_to_put[1,3] = 0.35
-    pos_to_put[2,3] = 0.25
-    print("The first block is going to be put at", pos_to_put)
+    pos_to_put_base = start_T0e
+    pos_to_put_base[0,3] = 0.56
+    pos_to_put_base[1,3] = 0.18
+    pos_to_put_base[2,3] = 0.24
+    print("The first block is going to be put at", pos_to_put_base)
+
     loop = 0
     for pos in block_pos_list:
         # pdb.set_trace()
@@ -154,22 +155,23 @@ if __name__ == "__main__":
         arm.exec_gripper_cmd(0.025,50)
         
         
-        pos[2, 3] += 0.2
+        pos[2, 3] += 0.1
         target_joint_cfg, _, _, _ = ik.inverse(pos, seed, method='J_trans', alpha=0.5)
         for i in range(len(target_joint_cfg)):
             target_joint_cfg[i] = scale_to_minus_pi_to_pi(target_joint_cfg[i])
         target_joint_cfg[6] = target_joint_cfg[6] % pi
         arm.safe_move_to_position(target_joint_cfg)
 
-        pos_to_put_base = pos_to_put
-        pos_to_put_base[2,3] = pos_to_put_base[2,3]+0.205
+
+        pos_to_put_base[2,3] += 0.1
+        print("The height before descending is", pos_to_put_base[2,3] )
         target_joint_cfg, _, _, _ = ik.inverse(pos_to_put_base, seed, method='J_trans', alpha=0.5)
         for i in range(len(target_joint_cfg)):
             target_joint_cfg[i] = scale_to_minus_pi_to_pi(target_joint_cfg[i])
         target_joint_cfg[6] = target_joint_cfg[6] % pi
         arm.safe_move_to_position(target_joint_cfg)
 
-        pos_to_put_base[2,3] = pos_to_put_base[2,3]-(4-loop)*0.05
+        pos_to_put_base[2,3] -= 0.1
         target_joint_cfg, _, _, _ = ik.inverse(pos_to_put_base, seed, method='J_trans', alpha=0.5)
         for i in range(len(target_joint_cfg)):
             target_joint_cfg[i] = scale_to_minus_pi_to_pi(target_joint_cfg[i])
@@ -177,7 +179,7 @@ if __name__ == "__main__":
         arm.safe_move_to_position(target_joint_cfg)
         arm.exec_gripper_cmd(0.12,50)
 
-        pos_to_put_base[2,3] = pos_to_put_base[2,3]+(5-loop)*0.05
+        pos_to_put_base[2,3] += 0.05
         target_joint_cfg, _, _, _ = ik.inverse(pos_to_put_base, seed, method='J_trans', alpha=0.5)
         for i in range(len(target_joint_cfg)):
             target_joint_cfg[i] = scale_to_minus_pi_to_pi(target_joint_cfg[i])
@@ -185,7 +187,6 @@ if __name__ == "__main__":
         arm.safe_move_to_position(target_joint_cfg)
 
         arm.safe_move_to_position(start_position)
-        loop += 1
         
 
 

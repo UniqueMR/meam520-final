@@ -276,7 +276,7 @@ class IK:
             J_pinv = np.linalg.pinv(J)  # Pseudo-inverse
 
             # Combine tasks with task prioritization
-            dq = alpha * dq_ik + (1 - alpha) * np.dot((np.eye(7) - np.dot(J_pinv, J)), dq_center)
+            dq = alpha * dq_ik + (alpha) * np.dot((np.eye(7) - np.dot(J_pinv, J)), dq_center)
             q += dq
 
             # Update current end effector pose and distance/angle
