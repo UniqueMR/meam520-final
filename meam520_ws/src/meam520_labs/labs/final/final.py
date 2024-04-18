@@ -85,6 +85,11 @@ if __name__ == "__main__":
 
     # start_position = np.array([-0.01779206, -0.76012354,  0.01978261, -2.34205014, 0.02984053, 1.54119353+pi/2, 0.75344866])
     start_position = np.array([0, 0,  0, -pi/2, 0, pi/2, pi/4])
+    _, start_T0e = fk.forward(start_position)
+    start_T0e[0][3] -= 0.03
+    start_T0e[1][3] -= 0.17
+    start_T0e[2][3] += 0.2
+    start_position, _, _, _ = ik.inverse(start_T0e, seed, method='J_trans', alpha=0.5)
     arm.safe_move_to_position(start_position) # on your mark!
     _, start_T0e = fk.forward(start_position)
 
@@ -108,12 +113,12 @@ if __name__ == "__main__":
     # Detect some blocks...
     for (name, pose) in detector.get_detections():
         # pdb.set_trace()
-        print(name,'\n',pose)
+        print(name,'\n',start_T0e @ H_ee_camera @ pose)
         block_pos_list.append(start_T0e @ H_ee_camera @ pose)
 
-    #Uncomment to get middle camera depth/rgb images
-    mid_depth = detector.get_mid_depth()
-    mid_rgb = detector.get_mid_rgb()
+    # #Uncomment to get middle camera depth/rgb images
+    # mid_depth = detector.get_mid_depth()
+    # mid_rgb = detector.get_mid_rgb()
     ee_yaw, ee_pitch, ee_roll = matrix_to_yaw_pitch_roll(start_T0e[:3, :3])
     prev_yaw = ee_yaw
 
@@ -144,13 +149,21 @@ if __name__ == "__main__":
         for i in range(len(target_joint_cfg)):
             target_joint_cfg[i] = scale_to_minus_pi_to_pi(target_joint_cfg[i])
         target_joint_cfg[6] = target_joint_cfg[6] % pi
+        if target_joint_cfg[6] > 2.89730:
+            target_joint_cfg[6] -= pi
+        if target_joint_cfg[6] < -2.89730:
+            target_joint_cfg[6] += pi
         arm.safe_move_to_position(target_joint_cfg)
 
-        pos[2, 3] -= 0.04
+        pos[2, 3] -= 0.07
         target_joint_cfg, _, _, _ = ik.inverse(pos, seed, method='J_trans', alpha=0.5)
         for i in range(len(target_joint_cfg)):
             target_joint_cfg[i] = scale_to_minus_pi_to_pi(target_joint_cfg[i])
         target_joint_cfg[6] = target_joint_cfg[6] % pi
+        if target_joint_cfg[6] > 2.89730:
+            target_joint_cfg[6] -= pi
+        if target_joint_cfg[6] < -2.89730:
+            target_joint_cfg[6] += pi
         arm.safe_move_to_position(target_joint_cfg)
         arm.exec_gripper_cmd(0.025,50)
         
@@ -160,6 +173,10 @@ if __name__ == "__main__":
         for i in range(len(target_joint_cfg)):
             target_joint_cfg[i] = scale_to_minus_pi_to_pi(target_joint_cfg[i])
         target_joint_cfg[6] = target_joint_cfg[6] % pi
+        if target_joint_cfg[6] > 2.89730:
+            target_joint_cfg[6] -= pi
+        if target_joint_cfg[6] < -2.89730:
+            target_joint_cfg[6] += pi
         arm.safe_move_to_position(target_joint_cfg)
 
 
@@ -169,6 +186,10 @@ if __name__ == "__main__":
         for i in range(len(target_joint_cfg)):
             target_joint_cfg[i] = scale_to_minus_pi_to_pi(target_joint_cfg[i])
         target_joint_cfg[6] = target_joint_cfg[6] % pi
+        if target_joint_cfg[6] > 2.89730:
+            target_joint_cfg[6] -= pi
+        if target_joint_cfg[6] < -2.89730:
+            target_joint_cfg[6] += pi
         arm.safe_move_to_position(target_joint_cfg)
 
         pos_to_put_base[2,3] -= 0.1
@@ -176,17 +197,26 @@ if __name__ == "__main__":
         for i in range(len(target_joint_cfg)):
             target_joint_cfg[i] = scale_to_minus_pi_to_pi(target_joint_cfg[i])
         target_joint_cfg[6] = target_joint_cfg[6] % pi
+        if target_joint_cfg[6] > 2.89730:
+            target_joint_cfg[6] -= pi
+        if target_joint_cfg[6] < -2.89730:
+            target_joint_cfg[6] += pi
         arm.safe_move_to_position(target_joint_cfg)
         arm.exec_gripper_cmd(0.12,50)
 
-        pos_to_put_base[2,3] += 0.05
+        pos_to_put_base[2,3] += 0.06
         target_joint_cfg, _, _, _ = ik.inverse(pos_to_put_base, seed, method='J_trans', alpha=0.5)
         for i in range(len(target_joint_cfg)):
             target_joint_cfg[i] = scale_to_minus_pi_to_pi(target_joint_cfg[i])
         target_joint_cfg[6] = target_joint_cfg[6] % pi
+        if target_joint_cfg[6] > 2.89730:
+            target_joint_cfg[6] -= pi
+        if target_joint_cfg[6] < -2.89730:
+            target_joint_cfg[6] += pi
         arm.safe_move_to_position(target_joint_cfg)
-
+        print("move1 to", target_joint_cfg)
         arm.safe_move_to_position(start_position)
+        print("move2 to", start_position)
         
 
 
