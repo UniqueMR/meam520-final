@@ -1,0 +1,8 @@
+prefix=/home/student/meam520_ws/devel_isolated/franka_interface
+
+Name: franka_interface
+Description: Description of franka_interface
+Version: 0.7.1
+Cflags: -I/opt/ros/noetic/include
+Libs: -L${prefix}/lib -lcustom_franka_state_controller /opt/ros/noetic/lib/aarch64-linux-gnu/libfranka.so.0.9.2
+Requires: controller_interface franka_msgs dynamic_reconfigure franka_hw franka_control franka_core_msgs geometry_msgs hardware_interface pluginlib realtime_tools roscpp

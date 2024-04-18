@@ -1,0 +1,8 @@
+prefix=/home/student/meam520_ws/install_isolated
+
+Name: franka_example_controllers
+Description: Description of franka_example_controllers
+Version: 0.9.0
+Cflags: -I${prefix}/include -I/opt/ros/noetic/include
+Libs: -L${prefix}/lib -lfranka_example_controllers /opt/ros/noetic/lib/aarch64-linux-gnu/libfranka.so.0.9.2
+Requires: controller_interface dynamic_reconfigure eigen_conversions franka_hw franka_gripper geometry_msgs hardware_interface tf tf_conversions message_runtime pluginlib realtime_tools roscpp

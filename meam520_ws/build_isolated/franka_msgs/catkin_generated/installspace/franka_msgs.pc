@@ -1,0 +1,8 @@
+prefix=/home/student/meam520_ws/install_isolated
+
+Name: franka_msgs
+Description: Description of franka_msgs
+Version: 0.9.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: message_runtime std_msgs actionlib_msgs

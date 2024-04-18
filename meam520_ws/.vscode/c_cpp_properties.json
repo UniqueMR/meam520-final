@@ -1,0 +1,38 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/student/meam520_ws/devel_isolated/meam520_labs/include/**",
+        "/home/student/meam520_ws/devel_isolated/panda_sim_custom_action_server/include/**",
+        "/home/student/meam520_ws/devel_isolated/franka_ros_controllers/include/**",
+        "/home/student/meam520_ws/devel_isolated/franka_example_controllers/include/**",
+        "/home/student/meam520_ws/devel_isolated/franka_core_msgs/include/**",
+        "/home/student/meam520_ws/devel_isolated/franka_msgs/include/**",
+        "/home/student/meam520_ws/devel_isolated/franka_gripper/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/student/meam520_ws/devel_isolated/orocos_kdl/include/**",
+        "/home/student/meam520_ws/src/franka_ros/franka_control/include/**",
+        "/home/student/meam520_ws/src/franka_ros/franka_example_controllers/include/**",
+        "/home/student/meam520_ws/src/franka_ros/franka_gazebo/include/**",
+        "/home/student/meam520_ws/src/franka_ros/franka_gripper/include/**",
+        "/home/student/meam520_ws/src/franka_ros/franka_hw/include/**",
+        "/home/student/meam520_ws/src/franka_ros_interface/franka_interface/include/**",
+        "/home/student/meam520_ws/src/franka_ros_interface/franka_ros_controllers/include/**",
+        "/home/student/meam520_ws/src/panda_simulator/panda_gazebo/include/**",
+        "/home/student/meam520_ws/src/panda_simulator/panda_hardware_interface/include/**",
+        "/home/student/meam520_ws/src/panda_simulator/panda_sim_controllers/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-arm64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

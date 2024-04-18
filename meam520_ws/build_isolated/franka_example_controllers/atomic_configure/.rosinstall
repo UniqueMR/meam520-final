@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/student/meam520_ws/devel_isolated/franka_example_controllers/setup.sh

@@ -1,0 +1,8 @@
+prefix=/home/student/meam520_ws/install_isolated
+
+Name: franka_description
+Description: Description of franka_description
+Version: 0.9.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: xacro

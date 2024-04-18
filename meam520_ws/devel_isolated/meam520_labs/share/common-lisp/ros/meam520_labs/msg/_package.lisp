@@ -1,0 +1,11 @@
+(cl:defpackage meam520_labs-msg
+  (:use )
+  (:export
+   "<BLOCKDETECTION>"
+   "BLOCKDETECTION"
+   "<BLOCKDETECTIONARRAY>"
+   "BLOCKDETECTIONARRAY"
+   "<TRANSFORMSTAMPEDLIST>"
+   "TRANSFORMSTAMPEDLIST"
+  ))
+

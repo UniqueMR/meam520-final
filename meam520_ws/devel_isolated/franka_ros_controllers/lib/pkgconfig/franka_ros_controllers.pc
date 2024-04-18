@@ -1,0 +1,8 @@
+prefix=/home/student/meam520_ws/devel_isolated/franka_ros_controllers
+
+Name: franka_ros_controllers
+Description: Description of franka_ros_controllers
+Version: 0.7.1
+Cflags: -I/home/student/meam520_ws/devel_isolated/franka_ros_controllers/include -I/opt/ros/noetic/include
+Libs: -L${prefix}/lib -lfranka_ros_controllers /opt/ros/noetic/lib/aarch64-linux-gnu/libfranka.so.0.9.2
+Requires: controller_interface dynamic_reconfigure franka_hw geometry_msgs franka_core_msgs hardware_interface message_runtime pluginlib realtime_tools roscpp

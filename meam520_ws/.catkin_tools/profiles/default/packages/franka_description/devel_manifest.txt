@@ -1,0 +1,5 @@
+franka_ros/franka_description
+/home/student/meam520_ws/devel/.private/franka_description/cmake.lock /home/student/meam520_ws/devel/./cmake.lock
+/home/student/meam520_ws/devel/.private/franka_description/share/franka_description/cmake/franka_descriptionConfig.cmake /home/student/meam520_ws/devel/share/franka_description/cmake/franka_descriptionConfig.cmake
+/home/student/meam520_ws/devel/.private/franka_description/share/franka_description/cmake/franka_descriptionConfig-version.cmake /home/student/meam520_ws/devel/share/franka_description/cmake/franka_descriptionConfig-version.cmake
+/home/student/meam520_ws/devel/.private/franka_description/lib/pkgconfig/franka_description.pc /home/student/meam520_ws/devel/lib/pkgconfig/franka_description.pc

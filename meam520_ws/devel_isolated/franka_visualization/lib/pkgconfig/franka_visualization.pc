@@ -1,0 +1,8 @@
+prefix=/home/student/meam520_ws/devel_isolated/franka_visualization
+
+Name: franka_visualization
+Description: Description of franka_visualization
+Version: 0.9.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: sensor_msgs roscpp

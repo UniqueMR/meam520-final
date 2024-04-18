@@ -1,0 +1,8 @@
+prefix=/home/student/meam520_ws/devel_isolated/panda_simulator_examples
+
+Name: panda_simulator_examples
+Description: Description of panda_simulator_examples
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: rospy franka_core_msgs gazebo_msgs franka_moveit panda_sim_moveit panda_gazebo

@@ -1,0 +1,2 @@
+franka_ros/franka_ros
+/home/student/meam520_ws/devel/.private/franka_ros/cmake.lock /home/student/meam520_ws/devel/./cmake.lock

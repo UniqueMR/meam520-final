@@ -1,0 +1,5 @@
+panda_simulator/panda_hardware_interface
+/home/student/meam520_ws/devel/.private/panda_hardware_interface/cmake.lock /home/student/meam520_ws/devel/./cmake.lock
+/home/student/meam520_ws/devel/.private/panda_hardware_interface/share/panda_hardware_interface/cmake/panda_hardware_interfaceConfig.cmake /home/student/meam520_ws/devel/share/panda_hardware_interface/cmake/panda_hardware_interfaceConfig.cmake
+/home/student/meam520_ws/devel/.private/panda_hardware_interface/share/panda_hardware_interface/cmake/panda_hardware_interfaceConfig-version.cmake /home/student/meam520_ws/devel/share/panda_hardware_interface/cmake/panda_hardware_interfaceConfig-version.cmake
+/home/student/meam520_ws/devel/.private/panda_hardware_interface/lib/pkgconfig/panda_hardware_interface.pc /home/student/meam520_ws/devel/lib/pkgconfig/panda_hardware_interface.pc

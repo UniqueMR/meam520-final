@@ -1,0 +1,8 @@
+prefix=/home/student/meam520_ws/devel_isolated/meam520_labs
+
+Name: meam520_labs
+Description: Description of meam520_labs
+Version: 0.0.0
+Cflags: -I/home/student/meam520_ws/devel_isolated/meam520_labs/include
+Libs: -L${prefix}/lib 
+Requires: message_runtime
