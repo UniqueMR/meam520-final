@@ -5,7 +5,7 @@ from math import pi
 import pdb
 import rospy
 import sys
-sys.path.append("../..")
+sys.path.append("../")
 # Common interfaces for interacting with both the simulation and real environments!
 from core.interfaces import ArmController
 from core.interfaces import ObjectDetector
@@ -68,7 +68,7 @@ def scale_to_minus_pi_to_pi(angle):
 
 
 def get_target_joint_config(pos):
-    target_joint_cfg, _, _, _ = ik.inverse(pos, seed, method='J_trans', alpha=0.5)
+    target_joint_cfg, _, _, _ = ik.inverse(pos, seed, method='J_pseudo', alpha=0.5)
     for i in range(len(target_joint_cfg)):
         target_joint_cfg[i] = scale_to_minus_pi_to_pi(target_joint_cfg[i])
     target_joint_cfg[6] = target_joint_cfg[6] % pi
@@ -178,18 +178,18 @@ if __name__ == "__main__":
 
         # Move to target
         pos_to_put_base[2,3] += 0.1
-        target_joint_cfg = get_target_joint_config(pos)
+        target_joint_cfg = get_target_joint_config(pos_to_put_base)
         arm.safe_move_to_position(target_joint_cfg)
 
         # Down
         pos_to_put_base[2,3] -= 0.1
-        target_joint_cfg = get_target_joint_config(pos)
+        target_joint_cfg = get_target_joint_config(pos_to_put_base)
         arm.safe_move_to_position(target_joint_cfg)
         arm.exec_gripper_cmd(0.12,50)
 
         # Up and back to start
         pos_to_put_base[2,3] += 0.06
-        target_joint_cfg = get_target_joint_config(pos)
+        target_joint_cfg = get_target_joint_config(pos_to_put_base)
         arm.safe_move_to_position(target_joint_cfg)
         print("move1 to", target_joint_cfg)
         arm.safe_move_to_position(start_position)
