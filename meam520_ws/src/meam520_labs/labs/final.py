@@ -105,8 +105,6 @@ if __name__ == "__main__":
     start_T0e[1][3] -= 0.17
     start_T0e[2][3] += 0.2
     start_position, _, _, _ = ik.inverse(start_T0e, seed, method='J_trans', alpha=0.5)
-    arm.safe_move_to_position(start_position) # on your mark!
-    _, start_T0e = fk.forward(start_position)
 
     print("\n****************")
     if team == 'blue':
@@ -118,81 +116,102 @@ if __name__ == "__main__":
     print("Go!\n") # go!
 
     # STUDENT CODE HERE
+    # static challenge
+    # arm.safe_move_to_position(start_position) # on your mark!
+    # _, start_T0e = fk.forward(start_position)
 
-    # get the transform from camera to panda_end_effector
-    H_ee_camera = detector.get_H_ee_camera()
-    # pdb.set_trace()
+    # # get the transform from camera to panda_end_effector
+    # H_ee_camera = detector.get_H_ee_camera()
+    # # pdb.set_trace()
 
-    block_pos_list = []
+    # block_pos_list = []
 
-    # Detect some blocks...
-    for (name, pose) in detector.get_detections():
-        # pdb.set_trace()
-        print(name,'\n',start_T0e @ H_ee_camera @ pose)
-        block_pos_list.append(start_T0e @ H_ee_camera @ pose)
+    # # Detect some blocks...
+    # for (name, pose) in detector.get_detections():
+    #     # pdb.set_trace()
+    #     print(name,'\n',start_T0e @ H_ee_camera @ pose)
+    #     block_pos_list.append(start_T0e @ H_ee_camera @ pose)
 
-    # #Uncomment to get middle camera depth/rgb images
-    # mid_depth = detector.get_mid_depth()
-    # mid_rgb = detector.get_mid_rgb()
-    ee_yaw, ee_pitch, ee_roll = matrix_to_yaw_pitch_roll(start_T0e[:3, :3])
-    prev_yaw = ee_yaw
+    # # #Uncomment to get middle camera depth/rgb images
+    # # mid_depth = detector.get_mid_depth()
+    # # mid_rgb = detector.get_mid_rgb()
+    # ee_yaw, ee_pitch, ee_roll = matrix_to_yaw_pitch_roll(start_T0e[:3, :3])
+    # prev_yaw = ee_yaw
 
-    #Move around...
-    arm.exec_gripper_cmd(0.12,50)
-    pos_to_put_base = start_T0e
-    pos_to_put_base[0,3] = 0.56
-    pos_to_put_base[1,3] = 0.18
-    pos_to_put_base[2,3] = 0.24
-    print("The first block is going to be put at", pos_to_put_base)
+    # #Move around...
+    # arm.exec_gripper_cmd(0.12,50)
+    # pos_to_put_base = start_T0e
+    # pos_to_put_base[0,3] = 0.56
+    # pos_to_put_base[1,3] = 0.18
+    # pos_to_put_base[2,3] = 0.24
+    # print("The first block is going to be put at", pos_to_put_base)
 
-    loop = 0
-    for pos in block_pos_list:
-        #################################################
-        #### Get The Position of Block in Base Frame ####
-        #################################################
-        blk_yaw, blk_pitch, blk_roll = matrix_to_yaw_pitch_roll(pos[:3, :3])
-        print("block yaw" + str(blk_yaw))
-        print("pitch" + str(blk_pitch))
-        print("roll" + str(blk_roll))
+    # loop = 0
+    # for pos in block_pos_list:
+    #     #################################################
+    #     #### Get The Position of Block in Base Frame ####
+    #     #################################################
+    #     blk_yaw, blk_pitch, blk_roll = matrix_to_yaw_pitch_roll(pos[:3, :3])
+    #     print("block yaw" + str(blk_yaw))
+    #     print("pitch" + str(blk_pitch))
+    #     print("roll" + str(blk_roll))
         
-        new_ee_yaw = align_yaw_with_block(prev_yaw, blk_yaw)
-        print("new ee yaw: " + str(new_ee_yaw))
-        prev_yaw = new_ee_yaw
-        pos[:3, :3] = yaw_pitch_roll_to_matrix(new_ee_yaw, ee_pitch, ee_roll)
+    #     new_ee_yaw = align_yaw_with_block(prev_yaw, blk_yaw)
+    #     print("new ee yaw: " + str(new_ee_yaw))
+    #     prev_yaw = new_ee_yaw
+    #     pos[:3, :3] = yaw_pitch_roll_to_matrix(new_ee_yaw, ee_pitch, ee_roll)
 
-        # Down
-        pos[2, 3] += 0.05
-        target_joint_cfg = get_target_joint_config(pos)
-        arm.safe_move_to_position(target_joint_cfg)
+    #     # Down
+    #     pos[2, 3] += 0.05
+    #     target_joint_cfg = get_target_joint_config(pos)
+    #     arm.safe_move_to_position(target_joint_cfg)
         
-        # Grap
-        pos[2, 3] -= 0.07
-        target_joint_cfg = get_target_joint_config(pos)
-        arm.safe_move_to_position(target_joint_cfg)
-        arm.exec_gripper_cmd(0.025,50)
+    #     # Grap
+    #     pos[2, 3] -= 0.07
+    #     target_joint_cfg = get_target_joint_config(pos)
+    #     arm.safe_move_to_position(target_joint_cfg)
+    #     arm.exec_gripper_cmd(0.025,50)
         
-        # Up
-        pos[2, 3] += 0.1
-        target_joint_cfg = get_target_joint_config(pos)
-        arm.safe_move_to_position(target_joint_cfg)
+    #     # Up
+    #     pos[2, 3] += 0.1
+    #     target_joint_cfg = get_target_joint_config(pos)
+    #     arm.safe_move_to_position(target_joint_cfg)
 
-        # Move to target
-        pos_to_put_base[2,3] += 0.1
-        target_joint_cfg = get_target_joint_config(pos_to_put_base)
-        arm.safe_move_to_position(target_joint_cfg)
+    #     # Move to target
+    #     pos_to_put_base[2,3] += 0.1
+    #     target_joint_cfg = get_target_joint_config(pos_to_put_base)
+    #     arm.safe_move_to_position(target_joint_cfg)
 
-        # Down
-        pos_to_put_base[2,3] -= 0.1
-        target_joint_cfg = get_target_joint_config(pos_to_put_base)
-        arm.safe_move_to_position(target_joint_cfg)
-        arm.exec_gripper_cmd(0.12,50)
+    #     # Down
+    #     pos_to_put_base[2,3] -= 0.1
+    #     target_joint_cfg = get_target_joint_config(pos_to_put_base)
+    #     arm.safe_move_to_position(target_joint_cfg)
+    #     arm.exec_gripper_cmd(0.12,50)
 
-        # Up and back to start
-        pos_to_put_base[2,3] += 0.06
-        target_joint_cfg = get_target_joint_config(pos_to_put_base)
-        arm.safe_move_to_position(target_joint_cfg)
-        print("move1 to", target_joint_cfg)
-        arm.safe_move_to_position(start_position)
-        print("move2 to", start_position)
+    #     # Up and back to start
+    #     pos_to_put_base[2,3] += 0.06
+    #     target_joint_cfg = get_target_joint_config(pos_to_put_base)
+    #     arm.safe_move_to_position(target_joint_cfg)
+    #     print("move1 to", target_joint_cfg)
+    #     arm.safe_move_to_position(start_position)
+    #     print("move2 to", start_position)
+
+    
+    # dynamic challenge
+    while True:
+        # move to prefixed position to wait for blks
+
+        # close the grip in each iteration
+
+        # continue if no object gripped
+        gripper_init_pos = 0.1
+        for i in range(10):
+            arm.exec_gripper_cmd(gripper_init_pos - i * 0.01)
+            print(arm.get_gripper_state())
+
+
+        # move the object to the stack place
+
+        # move to a safe place to go back to default
         
     #END STUDENT CODE
