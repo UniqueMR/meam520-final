@@ -7,12 +7,16 @@ import math
 import pdb
 import rospy
 import sys
+import scipy
+
+
 sys.path.append("../")
 # Common interfaces for interacting with both the simulation and real environments!
 from core.interfaces import ArmController
 from core.interfaces import ObjectDetector
 from lib.calculateFK import FK
 from lib.IK_position_null import IK
+from scipy.spatial.transform import Rotation as R
 # for timing that is consistent with simulation or real time as appropriate
 from core.utils import time_in_seconds
 
@@ -27,40 +31,39 @@ def find_vertical_axis_and_adjust_yaw(transformation_matrix):
     closest_axis_index = np.argmax(np.abs(cosines))
     return closest_axis_index
 
-def matrix_to_yaw_pitch_roll(matrix):
-    sy = np.sqrt(matrix[0, 0] * matrix[0, 0] + matrix[1, 0] * matrix[1, 0])
+def get_ee_x_axis(transformation_matrix):
+    # 提取末端执行器的X轴方向向量
+    ee_x_axis = transformation_matrix[0:3, 0]
+    return ee_x_axis
 
-    singular = sy < 1e-6
-
-    if not singular:
-        yaw = np.arctan2(matrix[1, 0], matrix[0, 0])
-        pitch = np.arctan2(-matrix[2, 0], sy)
-        roll = np.arctan2(matrix[2, 1], matrix[2, 2])
-    else:
-        yaw = np.arctan2(-matrix[1, 2], matrix[1, 1])
-        pitch = np.arctan2(-matrix[2, 0], sy)
-        roll = 0
-    angle_set = [pitch,yaw,roll] # x,y,z
-    return angle_set
-
-def yaw_pitch_roll_to_matrix(yaw, pitch, roll):
-    """Convert yaw, pitch, and roll angles to a 3x3 rotation matrix."""
-    # Construct rotation matrix using yaw, pitch, and roll angles
-    R_x = np.array([[1, 0, 0],
-                    [0, np.cos(roll), -np.sin(roll)],
-                    [0, np.sin(roll), np.cos(roll)]])
-
-    R_y = np.array([[np.cos(pitch), 0, np.sin(pitch)],
-                    [0, 1, 0],
-                    [-np.sin(pitch), 0, np.cos(pitch)]])
-
-    R_z = np.array([[np.cos(yaw), -np.sin(yaw), 0],
-                    [np.sin(yaw), np.cos(yaw), 0],
-                    [0, 0, 1]])
-
-    # Combine the rotation matrices
-    rotation_matrix = np.dot(R_z, np.dot(R_y, R_x))
-
+def align_ee_with_block(transformation_matrix, ee_matrix):
+    rotation_matrix = transformation_matrix[:3, :3]
+    vertical_direction = np.array([0, 0, -1])
+    cosines = np.dot(rotation_matrix.T, vertical_direction)
+    
+    # 找到垂直轴
+    vertical_axis_index = np.argmax(np.abs(cosines))
+    
+    # 选取一个非垂直轴，可以是X轴或Y轴，这里假设选择X轴
+    target_axis_index = (vertical_axis_index + 1) % 3  # 简单循环选择一个非垂直轴
+    target_axis = rotation_matrix[:, target_axis_index]
+    
+    # 末端执行器的X轴（假设开始时末端执行器X轴向前）
+    ee_x_axis = ee_matrix[0:3, 0]
+    
+    # 计算旋转角度
+    dot_product = np.dot(ee_x_axis, target_axis)
+    angle = np.arccos(dot_product)  # 计算角度
+    
+    # 检查旋转方向（使用叉积的Z分量）
+    cross_product = np.cross(ee_x_axis, target_axis)
+    if cross_product[2] < 0:
+        angle = -angle
+    
+    # 创建绕Z轴的旋转矩阵
+    rot = R.from_rotvec(np.array([0, 0, angle]))
+    rotation_matrix = rot.as_matrix()
+    
     return rotation_matrix
 
 def align_yaw_with_block(curr_yaw, blk_yaw):
@@ -79,6 +82,12 @@ def scale_to_minus_pi_to_pi(angle):
         scaled_angle -= 2 * np.pi
     return scaled_angle
 
+def get_ee_rotation_matrix(yaw_rate):
+    rz = np.array([ [np.cos(yaw_rate),-np.sin(yaw_rate),0,0],
+                    [np.sin(yaw_rate), np.cos(yaw_rate),0,0],
+                    [0,                 0,              1,0],
+                    [0,                 0,              0,1]])
+    return rz
 
 def get_target_joint_config(pos):
     target_joint_cfg, _, _, _ = ik.inverse(pos, seed, method='J_pseudo', alpha=0.5)
@@ -93,23 +102,6 @@ def get_target_joint_config(pos):
         target_joint_cfg[6] += pi
     
     return target_joint_cfg
-
-def get_ang(rot_idx, homo_mat):
-    # find ms item
-    ms_item, ms_val = 0, 0
-    for i in range(3):
-        if(np.abs(homo_mat[i][rot_idx]) > ms_val):
-            ms_val = np.abs(homo_mat[i][rot_idx])
-            ms_item = i
-
-    valid_element = []
-
-    for i in range(3):
-        for j in range(3):
-            if j != rot_idx and i!= ms_item:
-                valid_element.append(homo_mat[i][j])
-
-    return math.acos(np.abs(valid_element[0]))
 
 if __name__ == "__main__":
     try:
@@ -187,28 +179,24 @@ if __name__ == "__main__":
         #### Get The Position of Block in Base Frame ####
         #################################################
         pitch_roll_yaw = matrix_to_yaw_pitch_roll(pos[:3, :3])
-        print("block pitch", pitch_roll_yaw[0])
-        print("block roll", pitch_roll_yaw[1])
+        print("block roll", pitch_roll_yaw[0])
+        print("block pitch", pitch_roll_yaw[1])
         print("block yaw", pitch_roll_yaw[2])
 
-        # get the axis index that align with the ee z-axis
-        vertical_axis_index = find_vertical_axis_and_adjust_yaw(pos)
+        ######################################################################
+        rotate_ee_matrix = align_ee_with_block(pos,start_T0e)
+        new_ee_rotation_matrix = np.dot(rotate_ee_matrix, start_T0e[:3, :3])
+        print("The adjusted new ee H matrix:", new_ee_rotation_matrix)
+        pos[:3, :3] = new_ee_rotation_matrix
+        ######################################################################
 
-        ang = get_ang(vertical_axis_index, pos)
-        # pdb.set_trace()
-
-        new_ee_yaw = align_yaw_with_block(prev_yaw, ang)
-        print("new ee yaw: " + str(new_ee_yaw))
-        prev_yaw = new_ee_yaw
-        pos[:3, :3] = yaw_pitch_roll_to_matrix(new_ee_yaw, ee_pitch, ee_roll)
-
-        # Down
+      # Down
         pos[2, 3] += 0.05
         target_joint_cfg = get_target_joint_config(pos)
         arm.safe_move_to_position(target_joint_cfg)
         
         # Grap
-        pos[2, 3] -= 0.07
+        pos[2, 3] -= 0.05
         target_joint_cfg = get_target_joint_config(pos)
         arm.safe_move_to_position(target_joint_cfg)
         arm.exec_gripper_cmd(0.025,50)
