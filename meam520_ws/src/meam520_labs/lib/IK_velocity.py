@@ -19,38 +19,22 @@ def IK_velocity(q_in, v_in, omega_in):
 
     ## STUDENT CODE GOES HERE
 
-    Jacobian = calcJacobian(q_in)
+    dq = np.zeros((1, 7))
 
-    y = np.concatenate([v_in,omega_in])
+    v_in = v_in.reshape((3,1))
+    omega_in = omega_in.reshape((3,1))
 
-    nanvec = []
-
-    v = np.array([])
-    J = np.array([])
-
-    for i in range(6):
-        if not np.isnan(y[i]):
-            v = np.append(v,[y[i]])
-            J = np.append(J, Jacobian[i])
-
-    # for item in nanvec:
-    #     y[item] = 0
-    #     Jacobian[item] = np.zeros(7)
-
-    # y = y.T
-    v = v.T
-    J = J.reshape(-1,7)
-
-
-    dq = np.linalg.lstsq(J, v, rcond=None)[0]
-
-    # v_in = v_in.reshape((3,1))
-    # omega_in = omega_in.reshape((3,1))
+    end_desired_velocity = np.vstack((v_in, omega_in))
+    J = calcJacobian(q_in)
     
-    return dq
+    # find non NaN values
+    non_nan = ~np.isnan(end_desired_velocity ).flatten()
 
+    J_specified = J[non_nan, :]
+    velocity_specified = end_desired_velocity[non_nan]
 
-q_in = np.array([0,0,0,0,0,np.pi,0])
-v_in = np.array([0.5,0.5,np.nan])
-omega_in = np.array([0.5,0.5,0.5])
-print(IK_velocity(q_in,v_in,omega_in))
+    joint_velocities, _, _, _ = np.linalg.lstsq(J_specified, velocity_specified, rcond=None)
+
+    return joint_velocities.flatten()
+    
+    #return dq

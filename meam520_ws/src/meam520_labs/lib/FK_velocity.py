@@ -10,11 +10,13 @@ def FK_velocity(q_in, dq):
     """
 
     ## STUDENT CODE GOES HERE
+
+    velocity = np.zeros((6, 1))
+
     J = calcJacobian(q_in)
-
-
-    velocity = np.dot(J, dq)
+    velocity = J @ dq.T
 
 
     return velocity
+
 
