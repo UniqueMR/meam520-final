@@ -1,11 +1,12 @@
+import math
 
 import numpy as np
 from math import pi
 
+
 class FK():
 
     def __init__(self):
-
         # TODO: you may want to define geometric parameters here that will be
         # useful in computing the forward kinematics. The data you will need
         # is provided in the lab handout
@@ -27,89 +28,51 @@ class FK():
         """
 
         # Your Lab 1 code starts here
+        A1 = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0.141], [0, 0, 0, 1]])
+        A2 = np.array(
+            [[math.cos(q[0]), 0, -math.sin(q[0]), 0], [math.sin(q[0]), 0, math.cos(q[0]), 0], [0, -1, 0, 0.192],
+             [0, 0, 0, 1]])
+        A3 = np.array([[math.cos(q[1]), 0, math.sin(q[1]), 0.195 * math.sin(q[1])],
+                       [math.sin(q[1]), 0, -math.cos(q[1]), -0.195 * math.cos(q[1])], [0, 1, 0, 0], [0, 0, 0, 1]])
+        A4 = np.array([[math.cos(q[2]), 0, math.sin(q[2]), 0.0825 * math.cos(q[2])],
+                       [math.sin(q[2]), 0, -math.cos(q[2]), 0.0825 * math.sin(q[2])], [0, 1, 0, 0.121], [0, 0, 0, 1]])
+        A5 = np.array([[math.cos(q[3]), 0, -math.sin(q[3]), -0.0825 * math.cos(q[3]) - 0.125 * math.sin(q[3])],
+                       [math.sin(q[3]), 0, math.cos(q[3]), -0.0825 * math.sin(q[3]) + 0.125 * math.cos(q[3])],
+                       [0, -1, 0, 0], [0, 0, 0, 1]])
+        A6 = np.array([[math.cos(q[4]), 0, math.sin(q[4]), -0.015 * math.sin(q[4])],
+                       [math.sin(q[4]), 0, -math.cos(q[4]), 0.015 * math.cos(q[4])], [0, 1, 0, 0.259], [0, 0, 0, 1]])
+        A7 = np.array([[math.cos(q[5]), 0, math.sin(q[5]), 0.088 * math.cos(q[5]) + 0.051 * math.sin(q[5])],
+                       [math.sin(q[5]), 0, -math.cos(q[5]), 0.088 * math.sin(q[5]) - 0.051 * math.cos(q[5])],
+                       [0, 1, 0, 0.015], [0, 0, 0, 1]])
 
-        jointPositions = np.zeros((8,3))
-        T0e = np.identity(4)
+        A8 = np.array([[math.cos(q[6] - pi / 4), -math.sin(q[6] - pi / 4), 0, 0],
+                       [math.sin(q[6] - pi / 4), math.cos(q[6] - pi / 4), 0, 0], [0, 0, 1, 0.159], [0, 0, 0, 1]])
+        jointPositions = np.zeros((8, 3))
+        T0 = A1
+        T01 = T0 @ A2
+        T02 = T01 @ A3
+        T03 = T02 @ A4
+        T04 = T03 @ A5
+        T05 = T04 @ A6
+        T06 = T05 @ A7
+        T0e = T06 @ A8
 
+        # T0e = A1 @ A2 @ A3 @ A4 @ A5 @ A6 @ A7 @ A8
+        jointPositions[0, :] = T0[:, 3][0:3]
+        jointPositions[1, :] = T01[:, 3][0:3]
+        jointPositions[2, :] = T02[:, 3][0:3]
+        jointPositions[3, :] = T03[:, 3][0:3]
+        jointPositions[4, :] = T04[:, 3][0:3]
+        jointPositions[5, :] = T05[:, 3][0:3]
+        jointPositions[6, :] = T06[:, 3][0:3]
+        jointPositions[7, :] = T0e[:, 3][0:3]
 
-    #     # DH parameters for robot joints
-
-    #     dh = [
-    #         (0, 0, 0.141, 0),
-    #         [0, -pi / 2, 0.192, q[0]],
-    #         [0, pi / 2, 0, q[1]],
-    #         [0.0825, pi / 2, 0.195 + 0.121, q[2] ],
-    #         [0.0825, -pi / 2, 0, q[3] + pi ],
-    #         [0, -pi / 2, 0.125 + 0.259, q[4]],
-    #         [0.088, pi / 2, 0, q[5] - pi ],
-    #         [0, 0, 0.051 + 0.159, q[6] - pi / 4],]
-        
-        
-
-    #     # Calculate the position of each joint
-
-    #     for i in range(8):
-    #         T0e = T0e @ self.joint(dh[i])
-    #         jointPositions[i] = T0e[0:3, 3]
-
-        
-    #     # Your code ends here
-
-    #     return jointPositions, T0e
-
-        
-        # DH parameters for robot joints
-
-        dh = [
-            (0, 0, 0.141, 0),
-            [0, -pi / 2, 0.192, q[0]],
-            [0, pi / 2, 0, q[1]],
-            [0.0825, pi / 2, 0.195 + 0.121, q[2]],
-            [0.0825, pi / 2, 0, q[3] + pi],
-            [0, -pi / 2, 0.125 + 0.259, q[4]],
-            [0.088, pi / 2, 0, q[5] - pi],
-            [0, 0, 0.051 + 0.159, q[6] - pi / 4],]
-        
-
-        th = []
-
-        # Calculate the position of each joint
-
-        for i in range(8):
-            
-            T0e = T0e @ self.joint_transform(dh[i])
-            jointPositions[i] = T0e[0:3, 3]
-            th.append(T0e)
-
-        jointPositions[2] = (th[2] @ self.joint_transform([0, 0, 0.195, 0]))[0:3, 3]
-        jointPositions[4] = (th[4] @ self.joint_transform([0, 0, 0.125, 0]))[0:3, 3]
-        jointPositions[5] = (th[5] @ self.joint_transform([0, 0, -0.015, 0]))[0:3, 3]
-        jointPositions[6] = (th[6] @ self.joint_transform([0, 0, 0.051, 0]))[0:3, 3]
-
-    
         # Your code ends here
 
         return jointPositions, T0e
-    
-    def joint_transform(self, dh):
-        a, alpha, d, theta = dh
-        cosa = np.cos(alpha)
-        cost = np.cos(theta)
-        sina = np.sin(alpha)
-        sint = np.sin(theta)
-
-        return np.array(
-            [
-                [cost, -sint * cosa, sint * sina, a * cost],
-                [sint, cost * cosa, -cost * sina, a * sint],
-                 [0, sina, cosa, d],
-                 [0, 0, 0, 1],
-             ]
-         )
 
     # feel free to define additional helper methods to modularize your solution for lab 1
 
-    
     # This code is for Lab 2, you can ignore it ofr Lab 1
     def get_axis_of_rotation(self, q):
         """
@@ -123,28 +86,8 @@ class FK():
         """
         # STUDENT CODE HERE: This is a function needed by lab 2
 
-        T0e = np.identity(4)
-        rotation_axes = np.zeros((3,7))
+        return ()
 
-        dh = [
-            (0, 0, 0.141, 0),
-            [0, -pi / 2, 0.192, q[0]],
-            [0, pi / 2, 0, q[1]],
-            [0.0825, pi / 2, 0.195 + 0.121, q[2]],
-            [0.0825, pi / 2, 0, q[3] + pi],
-            [0, -pi / 2, 0.125 + 0.259, q[4]],
-            [0.088, pi / 2, 0, q[5] - pi],
-            [0, 0, 0.051 + 0.159, q[6] - pi / 4],]
-
-        for i in range(7):
-            T0e = T0e @ self.joint_transform(dh[i])
-            current_rotation_matrix= T0e[0:3, 0:3]
-            rotation_axes[:, [i]] = current_rotation_matrix @ (np.array([[0,0,1]]).T)
-        
-            
-        return rotation_axes
-
-    
     def compute_Ai(self, q):
         """
         INPUT:
@@ -156,18 +99,16 @@ class FK():
         """
         # STUDENT CODE HERE: This is a function needed by lab 2
 
-        return()
-    
-if __name__ == "__main__":
+        return ()
 
+
+if __name__ == "__main__":
     fk = FK()
 
     # matches figure in the handout
-    q = np.array([0,0,0,-pi/2,0,pi/2,pi/4])
+    q = np.array([0, 0, 0, 0, 0, 0, 0])
 
     joint_positions, T0e = fk.forward(q)
-    
-    print("Joint Positions:\n",joint_positions)
-    print("End Effector Pose:\n",T0e)
-    #axes = fk.get_axis_of_rotation(q)
-    #print("Axes of Rotation:\n", axes)
+
+    print("Joint Positions:\n", joint_positions)
+    print("End Effector Pose:\n", T0e)
