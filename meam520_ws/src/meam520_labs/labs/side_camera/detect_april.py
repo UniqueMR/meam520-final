@@ -18,6 +18,12 @@ def image_to_world(img_pos, team_id='red'):
     world_pos[1] = _world_pos[0]
     return world_pos
 
+def calculate_radius(img_pos):
+    world_pos = img_pos / 1000
+    world_pos[0] -= 1.0
+    world_pos[1] -= 0.5
+    return np.sqrt(world_pos[0] ** 2 + world_pos[1] ** 2)
+
 # Load an image
 image = cv2.imread('./imgs/aerial_view.png', cv2.IMREAD_GRAYSCALE)
 color_image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
