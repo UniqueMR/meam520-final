@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 # Load the image
-image_path = "./imgs/calibration_image.png"  # Replace "your_image.png" with the path to your image
+image_path = "./imgs/calibrate/calibration_image.png"  # Replace "your_image.png" with the path to your image
 img = mpimg.imread(image_path)
 
 # Display the image
