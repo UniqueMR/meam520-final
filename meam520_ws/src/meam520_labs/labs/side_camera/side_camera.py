@@ -3,7 +3,10 @@ from detect_april import is_square, image_to_world, calculate_radius
 import numpy as np
 import cv2
 import apriltag
+from PIL import Image
 import pdb
+import os
+import time
 
 class sideCamDetector:
     def __init__(self, trans_mat, targ_size) -> None:
@@ -30,36 +33,33 @@ class sideCamDetector:
         detections = self.detector.detect(cv2.cvtColor(self.transformed_frame, cv2.COLOR_BGR2GRAY))
         self.detection_stamp = []
         for d in detections:
-            if is_square(d):
+            if is_square(d, threshold=10):
                 self.detection_stamp.append({'position': image_to_world(d.center), 'r': calculate_radius(d.center), 'd': d})
         return self.detection_stamp
     
+def load_images_from_folder(folder):
+    images = []
+    for filename in os.listdir(folder):
+        img = Image.open(os.path.join(folder, filename))
+        if img is not None:
+            images.append(np.array(img))
+    return images
 
 if __name__ == '__main__':
-    calibrate_img_path = './imgs/calibration_image.png'
+    calibrate_img_path = './imgs/calibrate/calibrate.png'
     calibrate_img = cv2.imread(calibrate_img_path)
     targ_size = (2000, 1000)
-    calibrate_src_pts = np.array([[1170, 613], [885, 454], [392, 561], [680, 783]], dtype=np.float32)
+    calibrate_src_pts = np.array([[506, 227], [360, 176], [212, 220], [331, 285]], dtype=np.float32)
     calibrate_targ_pts = np.array([[1305, 500], [1000, 195], [695, 500], [1000, 805]], dtype=np.float32)
     calibrate_aerial_img, trans_mat = perspective_transform(calibrate_img, calibrate_src_pts, calibrate_targ_pts, targ_size)
     # pdb.set_trace()
-
-    # Video capture
-    video_path = './imgs/side_camera_stream.mov'
-    cap = cv2.VideoCapture(video_path)
     
     side_detector = sideCamDetector(trans_mat, targ_size)
 
-    if not cap.isOpened():
-        print("Error: Could not open video.")
-        exit()
-
-    while cap.isOpened():
-        ret, frame = cap.read()
-        
-        if not ret:
-            break
-
+    frames = load_images_from_folder('./imgs/samples')
+    
+    for frame in frames:
+        time.sleep(0.5)
         detections = side_detector.side_camera_detection(frame)
 
         for detection in detections:
@@ -75,5 +75,4 @@ if __name__ == '__main__':
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    cap.release()
     cv2.destroyAllWindows()
