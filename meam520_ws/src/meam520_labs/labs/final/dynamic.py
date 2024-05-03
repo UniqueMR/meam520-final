@@ -8,11 +8,14 @@ import numpy as np
 from math import pi
 import rospy
 from time import sleep
+from matplotlib import pyplot as plt
 import cv2
 import pdb
 
 class dynamicHandler:
     def __init__(self, team) -> None:
+        self.team = team
+
         self.arm = ArmController()
         self.detector = ObjectDetector()
 
@@ -21,6 +24,8 @@ class dynamicHandler:
         calibrate_targ_pts = np.array([[1305, 500], [1000, 195], [695, 500], [1000, 805]], dtype=np.float32)
         self.trans_mat = cv2.getPerspectiveTransform(calibrate_src_pts, calibrate_targ_pts)
         self.side_detector = sideCamDetector(self.trans_mat, targ_size)
+        self.side_camera_frame = np.array(None)
+        self.side_detection_stamp = None
 
         self.fk = FK()
         # self.ik = IK()
@@ -44,6 +49,14 @@ class dynamicHandler:
         self.arm.safe_move_to_position(self.end_effector_start)
         self.arm.open_gripper()
         print('move to the position to catch dynamic blocks ... ')
+
+        # detect the position of dynamic blocks
+        frame = self.update_side_camera_frame()
+        self.side_detection_stamp = self.side_detector.side_camera_detection(frame, self.team)
+        pdb.set_trace()
+        # plt.imshow(frame)
+        # plt.axis('off')
+        # plt.show()    
         self.arm.safe_move_to_position(self.wait_position_safe)
         self.arm.safe_move_to_position(self.wait_position_for_block)
         self.catch_block()
@@ -68,6 +81,17 @@ class dynamicHandler:
             else:
                 break
         return
+
+    def update_side_camera_frame(self):
+        frame = np.array(None)
+        while True:
+            frame = np.array(self.detector.get_mid_rgb())
+            if frame.any() == None:
+                continue
+            self.side_camera_frame = frame
+            break
+        return self.side_camera_frame
+            
 
 if __name__ == '__main__':
     try:
