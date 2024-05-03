@@ -53,10 +53,8 @@ class dynamicHandler:
         # detect the position of dynamic blocks
         frame = self.update_side_camera_frame()
         self.side_detection_stamp = self.side_detector.side_camera_detection(frame, self.team)
+        target_r = self.find_block_with_min_dist()
         pdb.set_trace()
-        # plt.imshow(frame)
-        # plt.axis('off')
-        # plt.show()    
         self.arm.safe_move_to_position(self.wait_position_safe)
         self.arm.safe_move_to_position(self.wait_position_for_block)
         self.catch_block()
@@ -91,8 +89,22 @@ class dynamicHandler:
             self.side_camera_frame = frame
             break
         return self.side_camera_frame
-            
 
+    def find_block_with_min_dist(self):
+        filtered_detections = []
+        for detection in self.side_detection_stamp:
+            if self.team == 'blue' and detection['position'] < 0:
+                continue
+            if self.team == 'red' and detection['position'] > 0:
+                continue
+            filtered_detections.append(detection)
+
+        if filtered_detections.empty():
+            return -1
+        
+        target = min(filtered_detections, key=lambda detection: detection['position'][0] ** 2 + detection['position'][1] ** 2)
+        return target['r']
+    
 if __name__ == '__main__':
     try:
         team = rospy.get_param("team") # 'red' or 'blue'

@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import apriltag
+import pupil_apriltags
 from PIL import Image
 import pdb
 import os
@@ -13,7 +14,10 @@ def perspective_transform(img, src, targ, targ_size):
 def is_square(r, threshold=3.0):
     diag1 = np.sqrt((r.corners[0][0] - r.corners[2][0]) ** 2 + (r.corners[0][1] - r.corners[2][1]) ** 2)
     diag2 = np.sqrt((r.corners[1][0] - r.corners[3][0]) ** 2 + (r.corners[1][1] - r.corners[3][1]) ** 2)
-    return np.abs(diag1 - diag2) < threshold
+
+    edge1 = np.sqrt((r.corners[0][0] - r.corners[1][0]) ** 2 + (r.corners[0][1] - r.corners[1][1]) ** 2)
+    edge2 = np.sqrt((r.corners[1][0] - r.corners[2][0]) ** 2 + (r.corners[1][1] - r.corners[2][1]) ** 2) 
+    return np.abs(diag1 - diag2) < threshold and np.abs(edge1 - edge2) < threshold
 
 def image_to_world(img_pos, team_id='red'):
     _world_pos = img_pos / 1000
@@ -33,7 +37,7 @@ def calculate_radius(img_pos):
 
 class sideCamDetector:
     def __init__(self, trans_mat, targ_size) -> None:
-        self.detector = apriltag.Detector()
+        self.detector = pupil_apriltags.Detector()
         self.trans_mat = trans_mat
         self.targ_size = targ_size
         self.detection_stamp = []
@@ -56,7 +60,7 @@ class sideCamDetector:
         detections = self.detector.detect(cv2.cvtColor(self.transformed_frame, cv2.COLOR_BGR2GRAY))
         self.detection_stamp = []
         for d in detections:
-            if is_square(d, threshold=10):
+            if is_square(d, threshold=100.0):
                 self.detection_stamp.append({'position': image_to_world(d.center, team_id=team), 'r': calculate_radius(d.center), 'd': d})
         return self.detection_stamp
     
@@ -83,7 +87,7 @@ if __name__ == '__main__':
     
     for frame in frames:
         time.sleep(0.5)
-        detections = side_detector.side_camera_detection(frame)
+        detections = side_detector.side_camera_detection(frame, 'red')
 
         for detection in detections:
             # Optionally, draw detections on the frame

@@ -6,7 +6,10 @@ import pdb
 def is_square(r, threshold=3.0):
     diag1 = np.sqrt((r.corners[0][0] - r.corners[2][0]) ** 2 + (r.corners[0][1] - r.corners[2][1]) ** 2)
     diag2 = np.sqrt((r.corners[1][0] - r.corners[3][0]) ** 2 + (r.corners[1][1] - r.corners[3][1]) ** 2)
-    return np.abs(diag1 - diag2) < threshold
+
+    edge1 = np.sqrt((r.corners[0][0] - r.corners[1][0]) ** 2 + (r.corners[0][1] - r.corners[1][1]) ** 2)
+    edge2 = np.sqrt((r.corners[1][0] - r.corners[2][0]) ** 2 + (r.corners[1][1] - r.corners[2][1]) ** 2) 
+    return np.abs(diag1 - diag2) < threshold and np.abs(edge1 - edge2) < threshold
 
 def image_to_world(img_pos, team_id='red'):
     _world_pos = img_pos / 1000
