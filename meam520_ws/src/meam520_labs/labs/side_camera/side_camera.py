@@ -1,5 +1,3 @@
-from aerial import perspective_transform
-from detect_april import is_square, image_to_world, calculate_radius
 import numpy as np
 import cv2
 import apriltag
@@ -7,6 +5,31 @@ from PIL import Image
 import pdb
 import os
 import time
+
+def perspective_transform(img, src, targ, targ_size):
+    trans_mat = cv2.getPerspectiveTransform(src, targ)
+    return cv2.warpPerspective(img, trans_mat, (targ_size)), trans_mat
+
+def is_square(r, threshold=3.0):
+    diag1 = np.sqrt((r.corners[0][0] - r.corners[2][0]) ** 2 + (r.corners[0][1] - r.corners[2][1]) ** 2)
+    diag2 = np.sqrt((r.corners[1][0] - r.corners[3][0]) ** 2 + (r.corners[1][1] - r.corners[3][1]) ** 2)
+    return np.abs(diag1 - diag2) < threshold
+
+def image_to_world(img_pos, team_id='red'):
+    _world_pos = img_pos / 1000
+    _world_pos[0] -= 1.0
+    _world_pos[1] -= 0.5
+    _world_pos[0] = _world_pos[0] + 0.99 if team_id == 'red' else _world_pos[0] - 0.99
+    world_pos = np.zeros(2)
+    world_pos[0] = _world_pos[1]
+    world_pos[1] = _world_pos[0]
+    return world_pos
+
+def calculate_radius(img_pos):
+    world_pos = img_pos / 1000
+    world_pos[0] -= 1.0
+    world_pos[1] -= 0.5
+    return np.sqrt(world_pos[0] ** 2 + world_pos[1] ** 2)
 
 class sideCamDetector:
     def __init__(self, trans_mat, targ_size) -> None:
@@ -16,7 +39,7 @@ class sideCamDetector:
         self.detection_stamp = []
         self.transformed_frame = None
 
-    def side_camera_detection(self, img):
+    def side_camera_detection(self, img, team):
         try:
             assert type(img) == type(np.zeros(1)), 'img should be numpy array'
         except AssertionError as error:
@@ -34,7 +57,7 @@ class sideCamDetector:
         self.detection_stamp = []
         for d in detections:
             if is_square(d, threshold=10):
-                self.detection_stamp.append({'position': image_to_world(d.center), 'r': calculate_radius(d.center), 'd': d})
+                self.detection_stamp.append({'position': image_to_world(d.center, team_id=team), 'r': calculate_radius(d.center), 'd': d})
         return self.detection_stamp
     
 def load_images_from_folder(folder):

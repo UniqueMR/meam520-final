@@ -10,7 +10,7 @@ import scipy
 from time import sleep
 
 
-sys.path.append("../")
+sys.path.append("../..")
 # Common interfaces for interacting with both the simulation and real environments!
 from core.interfaces import ArmController
 from core.interfaces import ObjectDetector
@@ -135,6 +135,11 @@ put_joint_cfg = np.array([[ 0.20468607,  0.09490256,  0.11311598, -1.88311308, -
 wait_dynamic_joint_cfg = np.array([[ 0.63724355,  1.40161769,  0.80526806, -0.64131916,  0.60221379,  1.12474077, -1.09398961],
                                    [ 0.89734229,  1.35313286,  0.81199125, -0.76877188,  0.69385525,  1.46421889, -1.10451542]
                     ])
+
+_wait_position_safe = np.array([[0.61653351, 1.31957225, 0.81314373, -0.68938005, 0.64868947, 1.12779263, -1.04486613], 
+                              [-0.59141293, 1.36660376, -0.94121216, -0.67323692, -0.53640283, 1.14407067, 2.57900007]])
+_wait_position_for_block = np.array([[0.91472912, 1.32152006, 0.83423489, -0.7072616, 0.7070031, 1.4366291, -1.02527523],
+                                    [-0.88582058, 1.35871385, -0.94851272, -0.70799929, -0.59808332, 1.4592748, 2.56978931]])
 
 # ############## BLUE #######################
 # put_joint_cfg = np.array([
@@ -381,24 +386,23 @@ if __name__ == "__main__":
                                [ 0,  0,  0,  1]])
 
         pos_to_wait_dynamic =  H_rotate_180_z @ H_rotate_90_y @ start_T0e   
-        pos_to_wait_dynamic[0,3] = 0.25
+        pos_to_wait_dynamic[0,3] = 0.28
 
-        #  pos_to_wait_dynamic[1,3] = 0.65      ###red
-        # pos_to_wait_dynamic[2,3] = 0.5
-
-        pos_to_wait_dynamic[1,3] = -0.65        ###blue
-        pos_to_wait_dynamic[2,3] = 0.3
+        pos_to_wait_dynamic[1,3] = -0.65 if team == 'blue' else 0.65        ###blue
+        pos_to_wait_dynamic[2,3] = 0.25
         
         # 圆盘左侧一定距离，防止碰撞
-        wait_position_safe, _, _, _ = ik.inverse(pos_to_wait_dynamic, seed, method='J_trans', alpha=0.5)
+        # wait_position_safe, _, _, _ = ik.inverse(pos_to_wait_dynamic, seed, method='J_trans', alpha=0.5)
+        wait_position_safe = _wait_position_safe[0] if team == 'red' else _wait_position_safe[1]
         print("wait_position_safe = ",wait_position_safe)
         # 向圆盘方向平移
         pos_to_wait_dynamic[0, 3] -= 0.2
-        # pos_to_wait_dynamic[1,3] = 0.75         ##red
-        pos_to_wait_dynamic[1,3] = -0.75        ##blue
-        wait_position_for_block, _, _, _ = ik.inverse(pos_to_wait_dynamic, seed, method='J_trans', alpha=0.5)
+        pos_to_wait_dynamic[1,3] = -0.75 if team == 'blue' else 0.75       ##blue
+        # wait_position_for_block, _, _, _ = ik.inverse(pos_to_wait_dynamic, seed, method='J_trans', alpha=0.5)
+        wait_position_for_block = _wait_position_for_block[0] if team == 'red' else _wait_position_safe[1]
         print("wait_position_for_block = ",wait_position_for_block)
         
+        pdb.set_trace()
 
     #######################
     ### Move and Place ####
