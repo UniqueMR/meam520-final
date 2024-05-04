@@ -19,13 +19,13 @@ class dynamicHandler:
         self.arm = ArmController()
         self.detector = ObjectDetector()
 
-        targ_size = (2000, 1000)
-        calibrate_src_pts = np.array([[506, 227], [360, 176], [212, 220], [331, 285]], dtype=np.float32)
-        calibrate_targ_pts = np.array([[1305, 500], [1000, 195], [695, 500], [1000, 805]], dtype=np.float32)
-        self.trans_mat = cv2.getPerspectiveTransform(calibrate_src_pts, calibrate_targ_pts)
-        self.side_detector = sideCamDetector(self.trans_mat, targ_size)
-        self.side_camera_frame = np.array(None)
-        self.side_detection_stamp = None
+        # targ_size = (2000, 1000)
+        # calibrate_src_pts = np.array([[506, 227], [360, 176], [212, 220], [331, 285]], dtype=np.float32)
+        # calibrate_targ_pts = np.array([[1305, 500], [1000, 195], [695, 500], [1000, 805]], dtype=np.float32)
+        # self.trans_mat = cv2.getPerspectiveTransform(calibrate_src_pts, calibrate_targ_pts)
+        # self.side_detector = sideCamDetector(self.trans_mat, targ_size)
+        # self.side_camera_frame = np.array(None)
+        # self.side_detection_stamp = None
 
         self.fk = FK()
 
@@ -90,8 +90,8 @@ class dynamicHandler:
         self.arm.open_gripper()
         for i in range(len(self.catch_trajectory)):
             self.arm.safe_move_to_position(self.catch_trajectory[i])
-        
-        self.catch_block()
+            if i == 1:        
+                self.catch_block()
 
         for i in range(len(self.put_trajectory[0])):
             self.arm.safe_move_to_position(self.put_trajectory[put_idx][i])
