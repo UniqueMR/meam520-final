@@ -87,13 +87,16 @@ class dynamicHandler:
 
 
     def forward(self, put_idx):
+        self.arm.open_gripper()
         for i in range(len(self.catch_trajectory)):
             self.arm.safe_move_to_position(self.catch_trajectory[i])
         
-        # self.catch_block()
+        self.catch_block()
 
         for i in range(len(self.put_trajectory[0])):
             self.arm.safe_move_to_position(self.put_trajectory[put_idx][i])
+            if i == 1:
+                self.arm.open_gripper()
 
         
     def catch_block(self, lb=0.03, ub=0.055):
