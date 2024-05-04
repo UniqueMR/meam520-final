@@ -1,0 +1,240 @@
+[INFO] [1714791753.086083, 0.000000]: Robot control running in Simulation Mode!
+[INFO] [1714791753.090838, 0.000000]: Waiting for collision behaviour services...
+[INFO] [1714791754.313592, 49.562000]: ArmController: Collision Service Not found. It will not be possible to change collision behaviour of robot!
+[INFO] [1714791754.315732, 49.562000]: FrankaControllerManagerInterface: cannot detect controller name under param /controllers_config/trajectory_controller
+[INFO] [1714791754.316375, 49.562000]: FrankaControllerManagerInterface: cannot detect controller name under param /controllers_config/impedance_controller
+[INFO] [1714791754.468814, 49.597000]: Moveit server does not seem to be running.
+[INFO] [1714791754.469353, 49.597000]: ArmController: MoveGroup was not found! This is okay if moveit service is not required!
+[INFO] [1714791754.524361, 49.607000]: GripperInterface: Waiting for gripper action servers... 
+[INFO] [1714791755.808949, 50.015000]: GripperInterface: Gripper action servers found! 
+[INFO] [1714791773.889474, 54.417000]: ArmController: Trajectory controlling complete
+init 1:  [-0.01779206 -0.76012354  0.01978261 -2.34205014  0.02984053  3.11198986
+  0.75344866]
+alter position 1:  [-0.17738912  0.36508447 -0.14503989 -0.94158462  0.05352144  1.30412555
+  0.486557  ]
+alter position 2:  [-0.23646275 -0.32689281 -0.12587776 -1.78812591 -0.04055528  1.46371393
+  0.42532196]
+alter position 3:  [-0.09052866 -0.10444902 -0.04349649 -1.56131663 -0.00456333  1.45698402
+  0.65109162]
+alter position 4:  [-0.26783968  0.12031891 -0.24925836 -1.2893465   0.03001882  1.40607658
+  0.27495439]
+
+****************
+**  RED TEAM  **
+****************
+Go!
+
+[INFO] [1714791831.008442, 65.933000]: ArmController: Trajectory controlling complete
+static 1:  [ 0.22186471  0.14780401  0.08676945 -1.24896551 -0.01295858  1.39628027
+  1.09083977]
+camera detection position is: 
+ [[ 9.99999999e-01  4.51007785e-07  4.20930467e-05  5.54377197e-01]
+ [ 4.50408991e-07 -1.00000000e+00  1.42254770e-05  1.69960516e-01]
+ [ 4.20930531e-05 -1.42254580e-05 -9.99999999e-01  5.71385485e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+"panda_EE" passed to lookupTransform argument target_frame does not exist. 
+H_ee_camera:
+ [[ 0.   -1.    0.    0.05]
+ [ 1.    0.    0.    0.  ]
+ [ 0.    0.    1.   -0.06]
+ [ 0.    0.    0.    1.  ]]
+====================================================
+cube1_static 
+ [[-5.51817032e-01 -1.61943241e-05  8.33965205e-01  4.95007617e-01]
+ [-8.33965205e-01 -2.71407967e-06 -5.51817033e-01 -9.10749346e-02]
+ [ 1.11997519e-05 -1.00000000e+00 -1.20078274e-05  2.25393934e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+cube3_static 
+ [[ 4.00758065e-01 -1.61916828e-05 -9.16183919e-01  6.24694873e-01]
+ [ 9.16183919e-01 -2.71569198e-06  4.00758065e-01 -9.87034393e-02]
+ [-8.97702077e-06 -1.00000000e+00  1.37462239e-05  2.25391855e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+The first block is going to be put at
+ [[ 9.99999999e-01  4.51007785e-07  4.20930467e-05  5.60000000e-01]
+ [ 4.50408991e-07 -1.00000000e+00  1.42254770e-05  1.80000000e-01]
+ [ 4.20930531e-05 -1.42254580e-05 -9.99999999e-01  2.55000000e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+--------------------------------
+----------New block-------------
+--------------------------------
+The adjusted position above this block is: 
+ [[ 8.33965203e-01 -5.51817034e-01  4.29539916e-05  4.95007617e-01]
+ [-5.51817034e-01 -8.33965204e-01 -1.13641268e-05 -9.10749346e-02]
+ [ 4.20930531e-05 -1.42254580e-05 -9.99999999e-01  2.75000000e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+[INFO] [1714792586.395353, 73.521000]: ArmController: Trajectory controlling complete
+static 2:  [-0.15505287 -0.12665421 -0.02611903 -2.22458813 -0.00382122  2.09801778
+  1.19089928]
+[INFO] [1714792596.801948, 75.900000]: ArmController: Trajectory controlling complete
+static 3:  [-0.10508288 -0.02409801 -0.076734   -2.32861894 -0.00249197  2.30463457
+  1.18981379]
+[INFO] [1714792821.404074, 83.161000]: ArmController: Trajectory controlling complete
+static 4:  [-0.16198904 -0.14439961 -0.01919238 -2.19104958 -0.00311073  2.04671852
+  1.19038298]
+Move to target.....
+[INFO] [1714792907.648690, 85.420000]: ArmController: Trajectory controlling complete
+static 5:  [ 0.20636337  0.10327712  0.1089204  -1.86895862 -0.01217142  1.97164585
+  1.10485465]
+down.....
+[INFO] [1714792925.649039, 87.864000]: ArmController: Trajectory controlling complete
+static 6:  [ 0.25645892  0.19602711  0.05688694 -2.01163497 -0.01377094  2.20735212
+  1.10584205]
+Up and back to start.....
+[INFO] [1714793120.485331, 95.245000]: ArmController: Trajectory controlling complete
+static 7:  [ 0.2263414   0.14125092  0.08830951 -1.95032864 -0.01430921  2.09103666
+  1.10628638]
+[INFO] [1714793131.639344, 97.374000]: ArmController: Trajectory controlling complete
+static 8:  [ 0.22186471  0.14780401  0.08676945 -1.24896551 -0.01295858  1.39628027
+  1.09083977]
+--------------------------------
+----------New block-------------
+--------------------------------
+The adjusted position above this block is: 
+ [[-9.16183917e-01  4.00758067e-01 -4.42659454e-05  6.24694873e-01]
+ [ 4.00758068e-01  9.16183918e-01  3.83599480e-06 -9.87034393e-02]
+ [ 4.20930531e-05 -1.42254580e-05 -9.99999999e-01  2.75000000e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+[INFO] [1714793141.873555, 99.739000]: ArmController: Trajectory controlling complete
+static 2:  [-0.26553242  0.25988246  0.12080154 -1.73566332 -0.03396437  1.99347489
+  1.06293049]
+[INFO] [1714793153.516392, 102.228000]: ArmController: Trajectory controlling complete
+static 3:  [-0.32972165  0.33873468  0.18968607 -1.83956055 -0.07601484  2.17126931
+  1.09017379]
+[INFO] [1714793203.316302, 109.550000]: ArmController: Trajectory controlling complete
+static 4:  [-0.25464288  0.24743642  0.10913719 -1.70087598 -0.02868633  1.9467142
+  1.059473  ]
+Move to target.....
+[INFO] [1714793215.174338, 111.924000]: ArmController: Trajectory controlling complete
+static 5:  [ 0.19620408  0.08325074  0.1195347  -1.76626381 -0.01031229  1.8489536
+  1.10355766]
+down.....
+[INFO] [1714793226.758000, 114.148000]: ArmController: Trajectory controlling complete
+static 6:  [ 0.2263414   0.14125092  0.08830951 -1.95032864 -0.01430921  2.09103666
+  1.10628638]
+Up and back to start.....
+[INFO] [1714793260.573532, 121.424000]: ArmController: Trajectory controlling complete
+static 7:  [ 0.20636337  0.10327712  0.1089204  -1.86895862 -0.01217142  1.97164585
+  1.10485465]
+[INFO] [1714793286.704218, 123.539000]: ArmController: Trajectory controlling complete
+static 8:  [ 0.22186471  0.14780401  0.08676945 -1.24896551 -0.01295858  1.39628027
+  1.09083977]
+[INFO] [1714793288.538193, 124.048000]: ArmController: Trajectory controlling complete
+static 1:  [ 0.22186471  0.14780401  0.08676945 -1.24896551 -0.01295858  1.39628027
+  1.09083977]
+camera detection position is: 
+ [[ 9.99999999e-01  4.51007785e-07  4.20930467e-05  5.54377197e-01]
+ [ 4.50408991e-07 -1.00000000e+00  1.42254770e-05  1.69960516e-01]
+ [ 4.20930531e-05 -1.42254580e-05 -9.99999999e-01  5.71385485e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+"panda_EE" passed to lookupTransform argument target_frame does not exist. 
+H_ee_camera:
+ [[ 0.   -1.    0.    0.05]
+ [ 1.    0.    0.    0.  ]
+ [ 0.    0.    1.   -0.06]
+ [ 0.    0.    0.    1.  ]]
+====================================================
+cube1_static 
+ [[-5.22114715e-03  1.23007185e-04  9.99986362e-01  5.63798244e-01]
+ [-9.99986369e-01  3.48313904e-05 -5.22115147e-03  1.89188967e-01]
+ [-3.54731545e-05 -9.99999992e-01  1.22823649e-04  2.25470360e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+cube3_static 
+ [[-1.49375375e-02  1.26023456e-04 -9.99888421e-01  5.63146079e-01]
+ [ 9.99888428e-01  3.59875147e-05 -1.49375330e-02  1.88313256e-01]
+ [ 3.41010197e-05 -9.99999991e-01 -1.26546960e-04  2.76268706e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+The first block is going to be put at
+ [[ 9.99999999e-01  4.51007785e-07  4.20930467e-05  5.60000000e-01]
+ [ 4.50408991e-07 -1.00000000e+00  1.42254770e-05  1.80000000e-01]
+ [ 4.20930531e-05 -1.42254580e-05 -9.99999999e-01  2.55000000e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+--------------------------------
+----------New block-------------
+--------------------------------
+The adjusted position above this block is: 
+ [[ 9.99986366e-01 -5.22177493e-03  4.21667614e-05  5.63798244e-01]
+ [-5.22177552e-03 -9.99986366e-01  1.40054636e-05  1.89188967e-01]
+ [ 4.20930531e-05 -1.42254580e-05 -9.99999999e-01  2.75000000e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+[INFO] [1714793322.739281, 131.619000]: ArmController: Trajectory controlling complete
+static 2:  [ 0.23411116  0.14336007  0.09416607 -1.89459529 -0.01504185  2.03732782
+  1.12470231]
+[INFO] [1714793330.671475, 133.655000]: Trajectory Server Message: error_code: -5
+error_string: "JointTrajectoryActionServer: Exceeded Max Goal Velocity Threshold for panda arm"
+[INFO] [1714793332.862252, 134.157000]: ArmController: Trajectory controlling complete
+static 3:  [ 0.28021902  0.22680713  0.04564939 -1.99611029 -0.0129092   2.2226934
+  1.1231526 ]
+[INFO] [1714793373.027454, 141.439000]: ArmController: Trajectory controlling complete
+static 4:  [ 0.2265923   0.12918713  0.10204152 -1.86111437 -0.01436556  1.98964299
+  1.1242516 ]
+Move to target.....
+[INFO] [1714793383.123066, 143.575000]: ArmController: Trajectory controlling complete
+static 5:  [ 0.20636337  0.10327712  0.1089204  -1.86895862 -0.01217142  1.97164585
+  1.10485465]
+down.....
+[INFO] [1714793400.074862, 146.078000]: ArmController: Trajectory controlling complete
+static 6:  [ 0.25645892  0.19602711  0.05688694 -2.01163497 -0.01377094  2.20735212
+  1.10584205]
+Up and back to start.....
+[INFO] [1714797388.858411, 153.449000]: ArmController: Trajectory controlling complete
+static 7:  [ 0.2263414   0.14125092  0.08830951 -1.95032864 -0.01430921  2.09103666
+  1.10628638]
+[INFO] [1714797396.375764, 155.562000]: ArmController: Trajectory controlling complete
+static 8:  [ 0.22186471  0.14780401  0.08676945 -1.24896551 -0.01295858  1.39628027
+  1.09083977]
+--------------------------------
+----------New block-------------
+--------------------------------
+The adjusted position above this block is: 
+ [[-9.99888424e-01 -1.49377724e-02 -4.18758599e-05  5.63146079e-01]
+ [-1.49377718e-02  9.99888425e-01 -1.48526472e-05  1.88313256e-01]
+ [ 4.20930531e-05 -1.42254580e-05 -9.99999999e-01  2.75000000e-01]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]]
+[INFO] [1714797405.683559, 157.981000]: ArmController: Trajectory controlling complete
+static 2:  [ 0.39553102  0.14051216 -0.07641281 -1.89809053  0.01197451  2.03812476
+  1.08493303]
+[INFO] [1714797420.339944, 160.859000]: ArmController: Trajectory controlling complete
+static 3:  [ 0.57641327  0.23196919 -0.26612425 -1.99904011  0.07607085  2.22167764
+  1.04140812]
+[INFO] [1714797436.700025, 163.933000]: ArmController: Trajectory controlling complete
+static 4:  [ 0.36847568  0.12600779 -0.04800565 -1.86463494  0.00660285  1.99044656
+  1.08861933]
+Move to target.....
+[INFO] [1714797445.690111, 166.195000]: ArmController: Trajectory controlling complete
+static 5:  [ 0.19620408  0.08325074  0.1195347  -1.76626381 -0.01031229  1.8489536
+  1.10355766]
+down.....
+[INFO] [1714797456.030818, 168.807000]: ArmController: Trajectory controlling complete
+static 6:  [ 0.2263414   0.14125092  0.08830951 -1.95032864 -0.01430921  2.09103666
+  1.10628638]
+Up and back to start.....
+[INFO] [1714799292.919021, 176.238000]: ArmController: Trajectory controlling complete
+static 7:  [ 0.20636337  0.10327712  0.1089204  -1.86895862 -0.01217142  1.97164585
+  1.10485465]
+[INFO] [1714799300.557495, 178.354000]: ArmController: Trajectory controlling complete
+static 8:  [ 0.22186471  0.14780401  0.08676945 -1.24896551 -0.01295858  1.39628027
+  1.09083977]
+--------------/n Static Complete! ------------------/n
+[INFO] [1714799556.970031, 189.992000]: ArmController: Trajectory controlling complete
+dynamic 1:  [ 0.6372539   1.40164762  0.80528983 -0.64127967  0.60220947  1.1247059
+ -1.09397295]
+first step complete
+
+[INFO] [1714799586.783384, 195.971000]: Trajectory Server Message: error_code: -5
+error_string: "JointTrajectoryActionServer: Exceeded Max Goal Velocity Threshold for panda arm"
+[INFO] [1714799588.766578, 196.475000]: ArmController: Trajectory controlling complete
+dynamic 2:  [ 0.89735778  1.35316572  0.81200166 -0.7687196   0.69385432  1.46417715
+ -1.10450269]
+successfully grabbed one block
+Number of i: 0
+[INFO] [1714799621.349011, 204.097000]: ArmController: Trajectory controlling complete
+dynamic 3:  [ 0.8755551   1.21551891  0.8406222  -0.80134909  0.7515986   1.45789912
+ -0.99548829]
+[INFO] [1714799637.515535, 208.424000]: ArmController: Trajectory controlling complete
+dynamic 4:  [ 0.19625593  0.08296527  0.12055401 -1.63915905 -0.01008102  1.72154515
+  1.10331111]
+[INFO] [1714799653.856949, 212.666000]: ArmController: Trajectory controlling complete
+dynamic 5:  [ 0.20647768  0.10341451  0.10881067 -1.8687268  -0.0121758   1.97153704
+  1.10485937]
+dynamic 6:  [ 0.19632443  0.08340417  0.11942184 -1.76600213 -0.01032211  1.84882991
+  1.10356607]
