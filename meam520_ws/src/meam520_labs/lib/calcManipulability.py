@@ -18,11 +18,11 @@ def calcManipulability(q_in):
     M = J_pos @ J_pos.T
 
     ## STUDENT CODE STARTS HERE for the mu index, Hint: np.linalg.svd
-    mu = 0.0
-
-    # Calculate the singular values
+    #mu = 0.0
+    
+    # Calculate the SVD of the positional part of the Jacobian
     U, S, Vh = np.linalg.svd(J_pos)
-
-    mu = np.product(S)
+    # The manipulability index is the square root of the product of the singular values
+    mu = np.sqrt(np.product(S))
 
     return mu, M

@@ -21,20 +21,15 @@ def IK_velocity(q_in, v_in, omega_in):
 
     dq = np.zeros((1, 7))
 
-    v_in = v_in.reshape((3,1))
-    omega_in = omega_in.reshape((3,1))
-
-    end_desired_velocity = np.vstack((v_in, omega_in))
-    J = calcJacobian(q_in)
+    v_in_column = v_in.reshape((3,1))
+    omega_in_column = omega_in.reshape((3,1))
     
-    # find non NaN values
-    non_nan = ~np.isnan(end_desired_velocity ).flatten()
-
-    J_specified = J[non_nan, :]
-    velocity_specified = end_desired_velocity[non_nan]
-
-    joint_velocities, _, _, _ = np.linalg.lstsq(J_specified, velocity_specified, rcond=None)
-
-    return joint_velocities.flatten()
+    Jacobian_matrix = calcJacobian(q_in)
+    velocity_vector = np.vstack((v_in_column, omega_in_column))
+    valid_rows = ~np.isnan(velocity_vector).ravel()
+    nan_rows = np.isnan(velocity_vector).ravel()
+    m = Jacobian_matrix[valid_rows, :]
+    n = velocity_vector[valid_rows]
+    dq, residuals, rank, s = np.linalg.lstsq(m, n, rcond=None)
     
-    #return dq
+    return dq
