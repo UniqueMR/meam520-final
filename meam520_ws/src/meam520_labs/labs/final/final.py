@@ -10,7 +10,7 @@ import scipy
 from time import sleep
 
 
-sys.path.append("../")
+sys.path.append("../..")
 # Common interfaces for interacting with both the simulation and real environments!
 from core.interfaces import ArmController
 from core.interfaces import ObjectDetector
@@ -248,7 +248,7 @@ if __name__ == "__main__":
     else:
         print("**  RED TEAM  **")
     print("****************")
-    input("\nWaiting for start... Press ENTER to begin!\n") # get set!
+    # input("\nWaiting for start... Press ENTER to begin!\n") # get set!
     print("Go!\n") # go!
 
     #############
@@ -258,144 +258,144 @@ if __name__ == "__main__":
     detect_pos_i = 0
     
 
-    while True:
-        # STUDENT CODE HERE
-        # static challenge
-        arm.safe_move_to_position(start_position_cfg)
-        print('static 1: ', start_position_cfg)
-        _, start_T0e = fk.forward(start_position_cfg)
-        print("camera detection position is: \n", start_T0e)
+    # while True:
+    #     # STUDENT CODE HERE
+    #     # static challenge
+    #     arm.safe_move_to_position(start_position_cfg)
+    #     print('static 1: ', start_position_cfg)
+    _, start_T0e = fk.forward(start_position_cfg)
+    print("camera detection position is: \n", start_T0e)
 
-        # get the transform from camera to panda_end_effector
-        H_ee_camera = detector.get_H_ee_camera()
-        print("H_ee_camera:\n", H_ee_camera)
-        # pdb.set_trace()
-        block_pos_list = []
+    #     # get the transform from camera to panda_end_effector
+    #     H_ee_camera = detector.get_H_ee_camera()
+    #     print("H_ee_camera:\n", H_ee_camera)
+    #     # pdb.set_trace()
+    #     block_pos_list = []
 
-        # Detect some blocks...
-        print("====================================================")
-        for (name, pose) in detector.get_detections():
-            # pose[0,3] -= 0.01 # offset for x
-            # pose[1,3] -= 0.05 # offset for y
-            pose[0,3] -= 0.01 # offset for x
-            pose[1,3] += 0.01 # offset for y 
-            print(name,'\n',start_T0e @ H_ee_camera @ pose)
-            block_pos_list.append(start_T0e @ H_ee_camera @ pose)
+    #     # Detect some blocks...
+    #     print("====================================================")
+    #     for (name, pose) in detector.get_detections():
+    #         # pose[0,3] -= 0.01 # offset for x
+    #         # pose[1,3] -= 0.05 # offset for y
+    #         pose[0,3] -= 0.01 # offset for x
+    #         pose[1,3] += 0.01 # offset for y 
+    #         print(name,'\n',start_T0e @ H_ee_camera @ pose)
+    #         block_pos_list.append(start_T0e @ H_ee_camera @ pose)
 
-        # #Uncomment to get middle camera depth/rgb images
-        # mid_depth = detector.get_mid_depth()
-        # mid_rgb = detector.get_mid_rgb()
+    #     # #Uncomment to get middle camera depth/rgb images
+    #     # mid_depth = detector.get_mid_depth()
+    #     # mid_rgb = detector.get_mid_rgb()
 
-        #Move around...
-        arm.open_gripper()
+    #     #Move around...
+    #     arm.open_gripper()
 
-        # Define where to put the blocks
-        pos_to_put_base = start_T0e
-        pos_to_put_base[0,3] = 0.56
-        if team == "red":
-            pos_to_put_base[1,3] = 0.18
-        else:
-            pos_to_put_base[1,3] = -0.18
-        pos_to_put_base[2,3] = 0.255
-        print("The first block is going to be put at\n", pos_to_put_base)
+    # Define where to put the blocks
+    pos_to_put_base = start_T0e
+    pos_to_put_base[0,3] = 0.56
+    if team == "red":
+        pos_to_put_base[1,3] = 0.18
+    else:
+        pos_to_put_base[1,3] = -0.18
+    pos_to_put_base[2,3] = 0.255
+    print("The first block is going to be put at\n", pos_to_put_base)
 
-        ############################
-        ###### Static Blocks #######
-        ############################
+    #     ############################
+    #     ###### Static Blocks #######
+    #     ############################
 
-        for pos in block_pos_list:
-            #################################################
-            #### Get The Position of Block in Base Frame ####
-            #################################################
+    #     for pos in block_pos_list:
+    #         #################################################
+    #         #### Get The Position of Block in Base Frame ####
+    #         #################################################
 
-            print("--------------------------------")
-            print("----------New block-------------")
-            print("--------------------------------")
-            ######################################################################
-            rotate_ee_matrix = align_ee_with_block(pos,start_T0e)
-            new_ee_rotation_matrix = np.dot(rotate_ee_matrix, start_T0e[:3, :3])
-            pos[:3, :3] = new_ee_rotation_matrix
-            pos[2,3] = 0.275
-            print("The adjusted position above this block is: \n", pos)
-            ######################################################################
+    #         print("--------------------------------")
+    #         print("----------New block-------------")
+    #         print("--------------------------------")
+    #         ######################################################################
+    #         rotate_ee_matrix = align_ee_with_block(pos,start_T0e)
+    #         new_ee_rotation_matrix = np.dot(rotate_ee_matrix, start_T0e[:3, :3])
+    #         pos[:3, :3] = new_ee_rotation_matrix
+    #         pos[2,3] = 0.275
+    #         print("The adjusted position above this block is: \n", pos)
+    #         ######################################################################
 
-            # Down
-            pos[2, 3] += 0.05
-            target_joint_cfg = get_target_joint_config(pos)
-            arm.safe_move_to_position(target_joint_cfg)
-            print('static 2: ', target_joint_cfg)
+    #         # Down
+    #         pos[2, 3] += 0.05
+    #         target_joint_cfg = get_target_joint_config(pos)
+    #         arm.safe_move_to_position(target_joint_cfg)
+    #         print('static 2: ', target_joint_cfg)
             
-            # Grap
-            pos[2, 3] -= 0.08
-            target_joint_cfg = get_target_joint_config(pos)
-            arm.safe_move_to_position(target_joint_cfg)
-            print('static 3: ', target_joint_cfg)
-            arm.exec_gripper_cmd(0.025,75)
+    #         # Grap
+    #         pos[2, 3] -= 0.08
+    #         target_joint_cfg = get_target_joint_config(pos)
+    #         arm.safe_move_to_position(target_joint_cfg)
+    #         print('static 3: ', target_joint_cfg)
+    #         arm.exec_gripper_cmd(0.025,75)
 
-            # Get the gripper distance ang check state
-            gripper_state = arm.get_gripper_state()
-            gripper_positions = gripper_state['position']
-            gripper_distance = gripper_positions[0] + gripper_positions[1]
-            # If fail to grip
-            if gripper_distance < 0.03:
-                print("==============\n","Fail to grip\n","==============\n")
-                start_position_cfg = alter_start_cfg_list[detect_pos_i]
-                detect_pos_i +=1
-                break
-                # arm.safe_move_to_position(alter_start_cfg_1)
-                # arm.open_gripper()
-                # H_ee_camera = detector.get_H_ee_camera()
-                # block_pos_list = []
-                # for (name, pose) in detector.get_detections():
-                #     pose[0,3] -= 0.05 # offset for x
-                #     pose[1,3] -= 0.01 # offset for y 
-                #     print(name,'\n',alter_start_position @ H_ee_camera @ pose)
-                #     block_pos_list.append(alter_start_position @ H_ee_camera @ pose)
-                # continue
+    #         # Get the gripper distance ang check state
+    #         gripper_state = arm.get_gripper_state()
+    #         gripper_positions = gripper_state['position']
+    #         gripper_distance = gripper_positions[0] + gripper_positions[1]
+    #         # If fail to grip
+    #         if gripper_distance < 0.03:
+    #             print("==============\n","Fail to grip\n","==============\n")
+    #             start_position_cfg = alter_start_cfg_list[detect_pos_i]
+    #             detect_pos_i +=1
+    #             break
+    #             # arm.safe_move_to_position(alter_start_cfg_1)
+    #             # arm.open_gripper()
+    #             # H_ee_camera = detector.get_H_ee_camera()
+    #             # block_pos_list = []
+    #             # for (name, pose) in detector.get_detections():
+    #             #     pose[0,3] -= 0.05 # offset for x
+    #             #     pose[1,3] -= 0.01 # offset for y 
+    #             #     print(name,'\n',alter_start_position @ H_ee_camera @ pose)
+    #             #     block_pos_list.append(alter_start_position @ H_ee_camera @ pose)
+    #             # continue
             
-            # Up
-            pos[2, 3] += 0.1
-            target_joint_cfg = get_target_joint_config(pos)
-            arm.safe_move_to_position(target_joint_cfg)
-            print('static 4: ', target_joint_cfg)
+    #         # Up
+    #         pos[2, 3] += 0.1
+    #         target_joint_cfg = get_target_joint_config(pos)
+    #         arm.safe_move_to_position(target_joint_cfg)
+    #         print('static 4: ', target_joint_cfg)
 
-            # Move to target
-            print("Move to target.....")
-            pos_to_put_base[2,3] += 0.1
-            target_joint_cfg = get_target_joint_config(pos_to_put_base)
-            arm.safe_move_to_position(target_joint_cfg)
-            print('static 5: ', target_joint_cfg)
-            # arm.safe_move_to_position(put_joint_cfg[put_i])
-            # put_i += 1
+    #         # Move to target
+    #         print("Move to target.....")
+    #         pos_to_put_base[2,3] += 0.1
+    #         target_joint_cfg = get_target_joint_config(pos_to_put_base)
+    #         arm.safe_move_to_position(target_joint_cfg)
+    #         print('static 5: ', target_joint_cfg)
+    #         # arm.safe_move_to_position(put_joint_cfg[put_i])
+    #         # put_i += 1
 
 
-            # Down
-            print("down.....")
-            pos_to_put_base[2,3] -= 0.1
-            target_joint_cfg = get_target_joint_config(pos_to_put_base)
-            arm.safe_move_to_position(target_joint_cfg)
-            print('static 6: ', target_joint_cfg)  
-            # arm.safe_move_to_position(put_joint_cfg[put_i])
-            # put_i += 1
-            arm.open_gripper()
+    #         # Down
+    #         print("down.....")
+    #         pos_to_put_base[2,3] -= 0.1
+    #         target_joint_cfg = get_target_joint_config(pos_to_put_base)
+    #         arm.safe_move_to_position(target_joint_cfg)
+    #         print('static 6: ', target_joint_cfg)  
+    #         # arm.safe_move_to_position(put_joint_cfg[put_i])
+    #         # put_i += 1
+    #         arm.open_gripper()
             
 
-            # Up and back to start
-            print("Up and back to start.....")
-            pos_to_put_base[2,3] += 0.05
-            target_joint_cfg = get_target_joint_config(pos_to_put_base)
-            arm.safe_move_to_position(target_joint_cfg)
-            print('static 7: ', target_joint_cfg)
-            # arm.safe_move_to_position(put_joint_cfg[put_i])
-            # put_i += 1
+    #         # Up and back to start
+    #         print("Up and back to start.....")
+    #         pos_to_put_base[2,3] += 0.05
+    #         target_joint_cfg = get_target_joint_config(pos_to_put_base)
+    #         arm.safe_move_to_position(target_joint_cfg)
+    #         print('static 7: ', target_joint_cfg)
+    #         # arm.safe_move_to_position(put_joint_cfg[put_i])
+    #         # put_i += 1
 
-            arm.safe_move_to_position(start_position_cfg)
-            print('static 8: ', start_position_cfg)
-            success_grip +=1
+    #         arm.safe_move_to_position(start_position_cfg)
+    #         print('static 8: ', start_position_cfg)
+    #         success_grip +=1
 
-        if success_grip == 4:
-            print("--------------/n","Static Complete!", "------------------/n")
-            break
+    #     if success_grip == 4:
+    #         print("--------------/n","Static Complete!", "------------------/n")
+    #         break
 
 
                 
@@ -448,11 +448,13 @@ if __name__ == "__main__":
             pos_to_wait_dynamic[0,3] = -0.15
             pos_to_wait_dynamic[1,3] = -0.65        ###blue
             pos_to_wait_dynamic[2,3] = 0.21
+
+        # print('dynamic position 1: ', pos_to_wait_dynamic)
         
         # 圆盘左侧一定距离，防止碰撞
-        wait_position_safe, _, _, _ = ik.inverse(pos_to_wait_dynamic, seed, method='J_trans', alpha=0.5)
-        arm.safe_move_to_position(wait_position_safe)
-        print('dynamic 1: ', wait_position_safe)
+        # wait_position_safe, _, _, _ = ik.inverse(pos_to_wait_dynamic, seed, method='J_trans', alpha=0.5)
+        # arm.safe_move_to_position(wait_position_safe)
+        # print('dynamic 1: ', wait_position_safe)
         print("first step complete\n")
         # 向圆盘方向平移
         
@@ -463,9 +465,11 @@ if __name__ == "__main__":
             # pos_to_wait_dynamic[0, 3] += 0.05
             pos_to_wait_dynamic[1,3] -= 0.14       ##blue
 
-        wait_position_for_block, _, _, _ = ik.inverse(pos_to_wait_dynamic, seed, method='J_trans', alpha=0.5)
-        arm.safe_move_to_position(wait_position_for_block)
-        print('dynamic 2: ', wait_position_for_block)
+        # wait_position_for_block, _, _, _ = ik.inverse(pos_to_wait_dynamic, seed, method='J_trans', alpha=0.5)
+        # arm.safe_move_to_position(wait_position_for_block)
+        # print('dynamic 2: ', wait_position_for_block)
+
+        # print('dynamic position 2: ', pos_to_wait_dynamic)
         
 
     #######################
@@ -492,7 +496,8 @@ if __name__ == "__main__":
             gripper_state = arm.get_gripper_state()
             gripper_positions = gripper_state['position']
             gripper_distance = gripper_positions[0] + gripper_positions[1]
-            if (gripper_distance > 0.055) or (gripper_distance < 0.03):
+            # if (gripper_distance > 0.055) or (gripper_distance < 0.03):
+            if False:
                 print("nothing grabbed for " + str(i) + " times\n")
                 print(f"Number of i: {i}")
                 arm.open_gripper()
@@ -506,31 +511,36 @@ if __name__ == "__main__":
 
         # move up
         pos_to_wait_dynamic[2,3] += 0.1
-        wait_position_for_block, _, _, _ = ik.inverse(pos_to_wait_dynamic, seed, method='J_trans', alpha=0.5)
-        arm.safe_move_to_position(wait_position_for_block)
-        print('dynamic 3: ', wait_position_for_block)
+        # wait_position_for_block, _, _, _ = ik.inverse(pos_to_wait_dynamic, seed, method='J_trans', alpha=0.5)
+        # arm.safe_move_to_position(wait_position_for_block)
+        # print('dynamic 3: ', wait_position_for_block)
+        # print('dynamic position 3: ', pos_to_wait_dynamic)
 
         # Move the object to the stack place 0.1m higher
         pos_to_put_base[2,3] += 0.1
         # target_joint_cfg = get_target_joint_config(pos_to_put_base)
         target_joint_cfg, _, _, _ = ik.inverse(pos_to_put_base, seed, method='J_trans', alpha=0.5)
-        arm.safe_move_to_position(target_joint_cfg)
+        # arm.safe_move_to_position(target_joint_cfg)
         print('dynamic 4: ', target_joint_cfg)
+
+        # print('dynamic position 4: ', pos_to_put_base)
 
         # Down
         pos_to_put_base[2,3] -= 0.1
         # target_joint_cfg = get_target_joint_config(pos_to_put_base)
         target_joint_cfg, _, _, _ = ik.inverse(pos_to_put_base, seed, method='J_trans', alpha=0.5)
-        arm.safe_move_to_position(target_joint_cfg)
+        # arm.safe_move_to_position(target_joint_cfg)
         print('dynamic 5: ', target_joint_cfg)
-        arm.open_gripper()
+        # arm.open_gripper()
+        # print('dynamic position 5: ', pos_to_put_base)
 
         # Move to a safe place to go back to default
         pos_to_put_base[2,3] += 0.05
         # target_joint_cfg = get_target_joint_config(pos_to_put_base)
         target_joint_cfg, _, _, _ = ik.inverse(pos_to_put_base, seed, method='J_trans', alpha=0.5)
         print('dynamic 6: ', target_joint_cfg)
-        arm.safe_move_to_position(target_joint_cfg)
+        # arm.safe_move_to_position(target_joint_cfg)
+        # print('dynamic position 6: ', pos_to_put_base)
     print("End Loop")
     
     #END STUDENT CODE

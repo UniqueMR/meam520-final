@@ -15,7 +15,7 @@ import pdb
 class dynamicHandler:
     def __init__(self, team) -> None:
         self.team = team
-
+        
         self.arm = ArmController()
         self.detector = ObjectDetector()
 
@@ -28,45 +28,74 @@ class dynamicHandler:
         self.side_detection_stamp = None
 
         self.fk = FK()
-        # self.ik = IK()
-        self.end_effector_start = np.array([0,0,0,-pi/2,0,pi/2,pi/4])
-        _, self.start_T0e = self.fk.forward(self.end_effector_start)
 
-        self.wait_position_safe = np.array([0.61653351, 1.31957225, 0.81314373, -0.68938005, 0.64868947, 1.12779263, -1.04486613]) if team == 'red' \
-            else np.array([-0.59141293, 1.36660376, -0.94121216, -0.67323692, -0.53640283, 1.14407067, 2.57900007])
-        self.wait_position_for_block = np.array([0.91472912, 1.32152006, 0.83423489, -0.7072616, 0.7070031, 1.4366291, -1.02527523]) if team == 'red' \
-            else np.array([-0.59141293, 1.36660376, -0.94121216, -0.67323692, -0.53640283, 1.14407067, 2.57900007])
-        
-        # self.put_position_base = self.start_T0e
-        # self.put_position_base[0:3, 3] = (0.56, 0.18, 0.255)
-        self.put_joint_cfg = np.array([
+        self.catch_trajectory = np.array([
+            [ 0.6372539,   1.40164762,  0.80528983, -0.64127967,  0.60220947,  1.1247059,  -1.09397295 ],
+            [ 0.89735778,  1.35316572,  0.81200166, -0.7687196,   0.69385432,  1.46417715, -1.10450269 ],
+            [ 0.8755551,   1.21551891,  0.8406222,  -0.80134909,  0.7515986,   1.45789912, -0.99548829 ],
+        ]) if team == 'red'\
+        else np.array([
+            [ 0.33499526, -1.44718133, -1.78532658, -1.29092163, -0.16000819,  1.65311508, -0.93638914 ],
+            [ 0.84673118, -1.59435212, -1.63441296, -0.49283374, -0.32371925,  1.38519024, -0.91457699 ],
+            [ 0.84214002, -1.48761881, -1.5852708,  -0.49118942, -0.29202438,  1.34041696, -0.80352218 ]
+        ])
 
+        self.put_trajectory = np.array([
+            [
+                [ 0.20647768,  0.10341451,  0.10881067, -1.8687268,  -0.0121758,   1.97153704, 1.10485937 ],
+                [ 0.25655649,  0.19614435,  0.05678901, -2.01143984, -0.01375532,  2.20726171, 1.10583238 ],
+                [ 0.22644902,  0.14137623,  0.08820374, -1.95011878, -0.01430496,  2.09093887, 1.10628493 ]
+            ],
+            [
+                [ 0.19632443,  0.08340417,  0.11942184, -1.76600213, -0.01032211,  1.84882991, 1.10356607 ],
+                [ 0.22644902,  0.14137623,  0.08820374, -1.95011878, -0.01430496,  2.09093887, 1.10628493 ],
+                [ 0.20647768,  0.10341451,  0.10881067, -1.8687268,  -0.0121758,   1.97153704, 1.10485937 ]
+            ],
+            [
+                [ 0.19625593,  0.08296527,  0.12055401, -1.63915905, -0.01008102,  1.72154515, 1.10331111 ],
+                [ 0.20647768,  0.10341451,  0.10881067, -1.8687268,  -0.0121758,   1.97153704, 1.10485937 ],
+                [ 0.19632443,  0.08340417,  0.11942184, -1.76600213, -0.01032211,  1.84882991, 1.10356607 ]
+            ],
+            [
+                [ 0.20738953,  0.10459598,  0.11174524, -1.48310491, -0.01164338,  1.58711501, 1.10411573 ],
+                [ 0.19632443,  0.08340417,  0.11942184, -1.76600213, -0.01032211,  1.84882991, 1.10356607 ],
+                [ 0.19625593,  0.08296527,  0.12055401, -1.63915905, -0.01008102,  1.72154515, 1.10331111 ]
+            ]
+        ]) if team == 'red'\
+        else np.array([
+            [
+                [-0.16139429,  0.15739791, -0.17193531, -1.28283998,  0.02708591,  1.43806041, 0.4577402  ],
+                [-0.15130102,  0.08352683, -0.16783406, -1.63912252,  0.01412509,  1.72148428, 0.46471598 ],
+                [-0.15386668,  0.10538884, -0.16954676, -1.48309612,  0.01777903,  1.58703699, 0.46261994 ]
+            ],
+            [
+                [-0.18570343,  0.25390382, -0.16670467, -1.01011098,  0.04379911,  1.26128765, 0.4516074  ],
+                [-0.15386668,  0.10538884, -0.16954676, -1.48309612,  0.01777903,  1.58703699, 0.46261994 ],
+                [-0.16139429,  0.15739791, -0.17193531, -1.28283998,  0.02708591,  1.43806041, 0.4577402  ]
+            ],
+            [
+                [-0.23533546,  0.38258236, -0.1347662,  -0.68306081,  0.05745935,  1.06640299, 0.45288853 ],
+                [-0.16139429,  0.15739791, -0.17193531, -1.28283998,  0.02708591,  1.43806041, 0.4577402  ],
+                [-0.18570343,  0.25390382, -0.16670467, -1.01011098,  0.04379911,  1.26128765, 0.4516074  ]
+            ],
+            [
+                [-0.2703309,   0.43063683, -0.09004394, -0.50981428,  0.04666033,  0.94903617, 0.46075708 ],
+                [-0.18570343,  0.25390382, -0.16670467, -1.01011098,  0.04379911,  1.26128765, 0.4516074  ],
+                [-0.23533546,  0.38258236, -0.1347662,  -0.68306081,  0.05745935,  1.06640299, 0.45288853 ]
+            ]
         ])
 
 
     def forward(self, put_idx):
-        print('move to start position ... ')
-        self.arm.safe_move_to_position(self.end_effector_start)
-        self.arm.open_gripper()
-        print('move to the position to catch dynamic blocks ... ')
-
-        # detect the position of dynamic blocks
-        frame = self.update_side_camera_frame()
-        self.side_detection_stamp = self.side_detector.side_camera_detection(frame, self.team)
-        target_r = self.find_block_with_min_dist()
-        pdb.set_trace()
-        self.arm.safe_move_to_position(self.wait_position_safe)
-        self.arm.safe_move_to_position(self.wait_position_for_block)
-        self.catch_block()
-        self.arm.safe_move_to_position(self.wait_position_safe)
-        self.arm.safe_move_to_position(self.end_effector_start)
-
-        # pos_to_put = self.put_position_base
-        # pos_to_put[2, 3] += z_to_put
-        # joint_to_put, _, _, _ = self.ik.inverse(pos_to_put, self.end_effector_start, method='J_trans', alpha=0.5)
+        for i in range(len(self.catch_trajectory)):
+            self.arm.safe_move_to_position(self.catch_trajectory[i])
         
-        self.arm.safe_move_to_position(self.put_joint_cfg[put_idx])
+        # self.catch_block()
 
+        for i in range(len(self.put_trajectory[0])):
+            self.arm.safe_move_to_position(self.put_trajectory[put_idx][i])
+
+        
     def catch_block(self, lb=0.03, ub=0.055):
         while True:
             sleep(6)
@@ -116,10 +145,8 @@ if __name__ == '__main__':
 
     dynamic_handler = dynamicHandler(team)
 
-    put_idx = 0
-    while True:
+    for put_idx in range(4):
         dynamic_handler.forward(put_idx)
-        put_idx += 1
 
     
 
