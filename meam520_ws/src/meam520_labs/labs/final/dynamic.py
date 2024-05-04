@@ -1,6 +1,6 @@
 import sys
 sys.path.append('../..')
-from labs.side_camera.side_camera import sideCamDetector
+# from labs.side_camera.side_camera import sideCamDetector
 from core.interfaces import ArmController, ObjectDetector
 from lib.calculateFK import FK
 from lib.IK_position_null import IK
