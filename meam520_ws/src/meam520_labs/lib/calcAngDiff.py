@@ -19,21 +19,18 @@ def calcAngDiff(R_des, R_curr):
     the current frame to the end effector frame. The magnitude of this vector
     must be sin(angle), where angle is the angle of rotation around this axis
     """
-    omega = np.zeros(3)
+    #omega = np.zeros(3)
     ## STUDENT CODE STARTS HERE
-
-     # Compute the relative rotation matrix
     
-    R_rel_rotation= np.linalg.inv(R_curr) @ R_des
+    # Calculate the rotation matrix from the current orientation to the desired orientation
+    R = np.linalg.inv(R_curr) @ R_des
 
-    # Compute the skew-symmetric matrix
+    # Compute the skew-symmetric part of the rotation matrix
+    S = 0.5 * (R - R.T)
 
-    S = 0.5 * (R_rel_rotation - R_rel_rotation.T)
-
-    # Extract the rotation axis from the skew-symmetric matrix
-
-    rotation_axis = np.array([S[2][1], S[0][2], S[1][0]])
-    omega = R_curr @ rotation_axis
-
-
+    # Extract the coefficients corresponding to the axis of rotation
+    omega1 = np.array([S[2, 1], S[0, 2], S[1, 0]])
+    
+    omega = R_curr @ omega1
+        
     return omega

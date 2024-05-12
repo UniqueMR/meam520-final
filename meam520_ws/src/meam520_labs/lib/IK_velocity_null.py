@@ -27,41 +27,22 @@ def IK_velocity_null(q_in, v_in, omega_in, b):
     omega_in = np.array(omega_in)
     omega_in = omega_in.reshape((3,1))
 
-
-    #primary_joint_velocities = IK_velocity(q_in, v_in, omega_in)
-
+    v_all = np.vstack((v_in, omega_in))
     J = calcJacobian(q_in)
-
-    # Create target velocity vector and filter out NaN values
-    target_velocity = np.vstack((v_in, omega_in))
-    #valid_indices = ~np.isnan(target_velocity).flatten()
-    #J_filtered = J[valid_indices, :]
-
+    
+    # Check for NaN values in the velocity vector and adjust J and v_all accordingly
     for i in range(6): 
-        if np.isnan(target_velocity[i][0]):
+        if np.isnan(v_all[i][0]):
             J[i] = np.zeros((1, 7))
-            target_velocity[i][0] = 0
+            v_all[i][0] = 0
 
+    # pseudoinverse of J
+    J_pinv = np.linalg.pinv(J)
+    # null space projector of J
+    N = np.eye(7) - np.dot(J_pinv, J)
+    # primary task velocity
+    dq = np.dot(J_pinv, v_all)
+    # secondary task velocity in the null space
+    null = np.dot(N, b)
 
-    J_pseudo_inverse = np.linalg.pinv(J)
-    I = np.eye(J.shape[1])
-
-    # Compute secondary task velocities projected onto the null space of the Jacobian
-    null_space_projector = I - J_pseudo_inverse@ J
-    dq = np.dot(J_pseudo_inverse, target_velocity)
-    secondary_joint_velocity = np.dot(null_space_projector, b)
-
-
-    joint_velocities = dq.flatten() + secondary_joint_velocity.flatten()
-
-    return joint_velocities
-
-
-
-
-
-
-
-
-    return dq + null
-
+    return dq.flatten() + null.flatten()
